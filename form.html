@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Booking Dekorasi — Hanaya Blom</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EE;
+    --warm-white: #FDFAF7;
+    --blush: #E8D5C4;
+    --rose: #C4956A;
+    --rose-deep: #A67452;
+    --sage: #8A9E8C;
+    --sage-light: #B5C9B7;
+    --charcoal: #2C2C2C;
+    --muted: #8A8278;
+    --border: #DDD5CB;
+    --error: #C0392B;
+    --success: #5A8F6A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--charcoal);
+    color: var(--cream);
+    text-align: center;
+    padding: 32px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(196,149,106,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(138,158,140,0.12) 0%, transparent 50%);
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .header p {
+    font-size: 12px;
+    color: rgba(247,243,238,0.55);
+    margin-top: 8px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* Progress Bar */
+  .progress-wrap {
+    background: var(--warm-white);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .step-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--warm-white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  .step-dot.active {
+    background: var(--rose);
+    border-color: var(--rose);
+    color: white;
+  }
+  .step-dot.done {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+  }
+  .step-line {
+    flex: 1;
+    height: 1.5px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--sage); }
+  .step-label {
+    display: flex;
+    justify-content: space-between;
+    max-width: 380px;
+    margin: 6px auto 0;
+    padding: 0 2px;
+  }
+  .step-label span {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    width: 28px;
+  }
+  .step-label span.active { color: var(--rose); font-weight: 500; }
+
+  /* Form Container */
+  .form-container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* Step panels */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--charcoal);
+    margin: 28px 0 4px;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  /* Field Group */
+  .field-group { margin-bottom: 18px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  label .req { color: var(--rose); margin-left: 2px; }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="time"],
+  input[type="url"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--warm-white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--rose);
+  }
+  input.error, textarea.error, select.error {
+    border-color: var(--error);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+    font-size: 12px;
+  }
+
+  /* Radio Pills */
+  .radio-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .radio-pill input { display: none; }
+  .radio-pill label {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--charcoal);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--warm-white);
+    margin-bottom: 0;
+  }
+  .radio-pill input:checked + label {
+    background: var(--rose);
+    border-color: var(--rose);
+    color: white;
+  }
+
+  /* Model Gallery */
+  .model-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .model-card {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--warm-white);
+    position: relative;
+  }
+  .model-card:hover { border-color: var(--rose); }
+  .model-card.selected { border-color: var(--rose); }
+  .model-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 6px; right: 8px;
+    background: var(--rose);
+    color: white;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .model-img {
+    width: 100%;
+    aspect-ratio: 3/2;
+    object-fit: cover;
+    background: var(--blush);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .model-img-placeholder {
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: linear-gradient(135deg, var(--blush), var(--cream));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .model-img-placeholder span { font-size: 24px; }
+  .model-img-placeholder small { font-size: 10px; color: var(--muted); }
+  .model-info { padding: 8px 10px; }
+  .model-name { font-size: 12px; font-weight: 500; color: var(--charcoal); }
+  .model-price { font-size: 11px; color: var(--rose); font-weight: 500; margin-top: 2px; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* Helper text */
+  .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .err-msg { font-size: 11px; color: var(--error); margin-top: 4px; display: none; }
+
+  /* Navigation Buttons */
+  .nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 32px;
+    padding-bottom: 20px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn-back {
+    background: var(--warm-white);
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    flex: 0 0 80px;
+  }
+  .btn-next {
+    background: var(--rose);
+    color: white;
+  }
+  .btn-next:hover { background: var(--rose-deep); }
+  .btn-submit {
+    background: var(--sage);
+    color: white;
+  }
+  .btn-submit:hover { background: #728f74; }
+
+  /* Preview Panel */
+  .preview-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  .preview-header {
+    background: var(--charcoal);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .preview-header span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--cream);
+  }
+  .preview-header .preview-acara {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--rose);
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .preview-body { padding: 16px 18px; }
+  .preview-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .preview-row:last-child { border-bottom: none; }
+  .preview-key {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 500;
+    min-width: 110px;
+  }
+  .preview-val {
+    font-size: 13px;
+    color: var(--charcoal);
+    text-align: right;
+    flex: 1;
+  }
+  .preview-model-img {
+    width: 100%;
+    aspect-ratio: 3/1;
+    background: linear-gradient(135deg, var(--blush), var(--cream));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--muted);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .preview-model-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Success Screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .success-icon {
+    width: 72px; height: 72px;
+    background: var(--sage);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+  }
+  .success-screen h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .success-screen p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .success-screen .btn-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #25D366;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="brand">Hanaya Blom</div>
+    <h1>Form Booking Dekorasi</h1>
+    <p>Isi data dengan lengkap, preview, lalu kirim</p>
+  </div>
+</div>
+
+<div id="mainForm">
+  <div class="progress-wrap">
+    <div class="progress-steps">
+      <div class="step-dot active" id="dot1">1</div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-dot" id="dot2">2</div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-dot" id="dot3">3</div>
+      <div class="step-line" id="line3"></div>
+      <div class="step-dot" id="dot4">4</div>
+    </div>
+    <div class="step-label">
+      <span class="active" id="lbl1">Data</span>
+      <span id="lbl2">Model</span>
+      <span id="lbl3">Lokasi</span>
+      <span id="lbl4">Review</span>
+    </div>
+  </div>
+
+  <div class="form-container">
+
+    <!-- Step 1: Data Customer -->
+    <div class="step-panel active" id="step1">
+      <div class="section-title">Data Customer</div>
+      <div class="section-sub">Informasi pemesan & acara</div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Nama Pemesan <span class="req">*</span></label>
+          <input type="text" id="namaPemesan" placeholder="Nama lengkap">
+        </div>
+        <div class="field-group">
+          <label>No. WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="noWA" placeholder="08xx">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Jenis Acara <span class="req">*</span></label>
+        <div class="radio-pills" id="acaraPills">
+          <label class="radio-pill"><input type="radio" name="acara" value="Engagement"> <label>Engagement</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Wedding"> <label>Wedding</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Khitan"> <label>Khitan</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Aqiqah"> <label>Aqiqah</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Birthday"> <label>Birthday</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Custom"> <label>Custom</label></label>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Tanggal Acara <span class="req">*</span></label>
+          <input type="date" id="tanggalAcara">
+        </div>
+        <div class="field-group">
+          <label>Jam Acara <span class="req">*</span></label>
+          <input type="time" id="jamAcara">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title" style="margin-top:0">Nama di Dekorasi</div>
+      <div class="section-sub">Nama yang akan tertulis di dekorasi</div>
+
+      <!-- Engagement / Wedding: 2 nama -->
+      <div id="namaDoubleWrap">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Nama Perempuan</label>
+            <input type="text" id="namaPerempuan" placeholder="Contoh: Sari">
+          </div>
+          <div class="field-group">
+            <label>Nama Laki-laki</label>
+            <input type="text" id="namaLaki" placeholder="Contoh: Budi">
+          </div>
+        </div>
+      </div>
+
+      <!-- Acara lain: 1 nama -->
+      <div id="namaSingleWrap" style="display:none">
+        <div class="field-group">
+          <label>Nama <span class="req">*</span></label>
+          <input type="text" id="namaSingle" placeholder="Contoh: Rafi">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Tulisan Nama di Dekorasi <span class="req">*</span></label>
+        <input type="text" id="tulisanNama" placeholder="Contoh: Sari & Budi atau Sari">
+        <div class="helper">Ketik tepat seperti yang ingin ditampilkan</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-next" onclick="goToStep(2)">Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Model Dekorasi -->
+    <div class="step-panel" id="step2">
+      <div class="section-title">Pilih Model Dekorasi</div>
+      <div class="section-sub">Tap gambar untuk memilih model</div>
+
+      <div class="model-grid" id="modelGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="field-group" style="margin-top:18px">
+        <label>Catatan Dekorasi</label>
+        <textarea id="catatanDekorasi" placeholder="Warna tambahan, permintaan khusus, atau detail lain..."></textarea>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="goToStep(1)">←</button>
+        <button class="btn btn-next" onclick="goToStep(3)">Lanjut →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Lokasi -->
+    <div class="step-panel" id="step3">
+      <div class="section-title">Data Lokasi</div>
+      <div class="section-sub">Informasi tempat dekorasi dipasang</div>
+
+      <div class="field-group">
+        <label>Alamat Lengkap <span class="req">*</span></label>
+        <textarea id="alamat" placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota..." style="min-height:90px"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>Rumah Atas Nama <span class="req">*</span></label>
+        <input type="text" id="atasNama" placeholder="Nama pemilik rumah / pihak yang dihubungi">
+      </div>
+
+      <div class="field-group">
+        <label>Lokasi Dekor <span class="req">*</span></label>
+        <div class="radio-pills">
+          <label class="radio-pill"><input type="radio" name="lokasiDekor" value="Indoor"> <label>Indoor</label></label>
+          <label class="radio-pill"><input type="radio" name="lokasiDekor" value="Outdoor"> <label>Outdoor</label></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Kondisi Tembok <span class="req">*</span></label>
+        <div class="radio-pills">
+          <label class="radio-pill"><input type="radio" name="tembok" value="Boleh dipaku"> <label>Boleh dipaku</label></label>
+          <label class="radio-pill"><input type="radio" name="tembok" value="Tidak boleh dipaku"> <label>Tidak boleh dipaku</label></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Link Google Maps</label>
+        <input type="url" id="gmaps" placeholder="https://maps.app.goo.gl/...">
+        <div class="helper">Opsional tapi sangat membantu tim kami</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="goToStep(2)">←</button>
+        <button class="btn btn-next" onclick="goToStep(4)">Review →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Preview & Submit -->
+    <div class="step-panel" id="step4">
+      <div class="section-title">Konfirmasi Booking</div>
+      <div class="section-sub">Cek kembali sebelum dikirim</div>
+
+      <div class="preview-card">
+        <div class="preview-header">
+          <span id="prev-nama">—</span>
+          <span class="preview-acara" id="prev-acara">—</span>
+        </div>
+        <div class="preview-body">
+          <div class="preview-model-img" id="prev-model-img">
+            <span>Belum dipilih</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Model</span>
+            <span class="preview-val" id="prev-model">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Harga Estimasi</span>
+            <span class="preview-val" id="prev-harga" style="color:var(--rose);font-weight:500">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">No. WhatsApp</span>
+            <span class="preview-val" id="prev-wa">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Tanggal & Jam</span>
+            <span class="preview-val" id="prev-tanggal">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Nama di Dekorasi</span>
+            <span class="preview-val" id="prev-tulisan">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Alamat</span>
+            <span class="preview-val" id="prev-alamat">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Atas Nama</span>
+            <span class="preview-val" id="prev-atasnama">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-key">Lokasi & Tembok</span>
+            <span class="preview-val" id="prev-lokasi">—</span>
+          </div>
+          <div class="preview-row" id="prev-catatan-row">
+            <span class="preview-key">Catatan</span>
+            <span class="preview-val" id="prev-catatan">—</span>
+          </div>
+          <div class="preview-row" id="prev-gmaps-row">
+            <span class="preview-key">Google Maps</span>
+            <span class="preview-val"><a id="prev-gmaps" href="#" target="_blank" style="color:var(--rose)">Lihat lokasi</a></span>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--muted);margin-top:12px;text-align:center;">
+        Masih ada yang salah? Tap <strong>← Edit</strong> untuk kembali
+      </p>
+
+      <div class="nav-buttons">
+        <button class="btn btn-back" onclick="goToStep(3)">← Edit</button>
+        <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">Kirim Booking ✓</button>
+      </div>
+    </div>
+
+  </div><!-- /form-container -->
+</div><!-- /mainForm -->
+
+<!-- Success Screen -->
+<div class="success-screen" id="successScreen">
+  <div class="form-container" style="max-width:360px">
+    <div class="success-icon">🌸</div>
+    <h2>Booking Terkirim!</h2>
+    <p>Terima kasih telah memesan dekorasi di <strong>Hanaya Blom</strong>.<br>Tim kami akan segera menghubungi kamu via WhatsApp untuk konfirmasi lebih lanjut.</p>
+    <a id="waConfirmLink" href="#" class="btn-wa">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Chat via WhatsApp
+    </a>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — ganti dengan URL Apps Script kamu
+// ============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdNo6J45OHxZm65_uidaip-UvkJ2TPfDSWBEmAs-k0nyJ12kiuiwUgOWkIniftaJlK/exec';
+const WA_NUMBER = '628999478692'; // ganti nomor WA Hanaya Blom
+
+// ============================================================
+// Data Model Dekorasi (placeholder — isi dengan data asli)
+// Tambah/kurangi sesuai katalog kamu
+// ============================================================
+const MODELS = [
+  { id: 'M01', name: 'Romantic Garden', price: 2500000, img: null, emoji: '🌷' },
+  { id: 'M02', name: 'Rustic Bohemian', price: 2800000, img: null, emoji: '🌿' },
+  { id: 'M03', name: 'Modern Minimalist', price: 3000000, img: null, emoji: '✨' },
+  { id: 'M04', name: 'Classic Elegant', price: 3500000, img: null, emoji: '👑' },
+  { id: 'M05', name: 'Tropical Bloom', price: 2700000, img: null, emoji: '🌺' },
+  { id: 'M06', name: 'Custom Request', price: null, img: null, emoji: '🎨' },
+];
+
+// ============================================================
+// State
+// ============================================================
+let selectedModel = null;
+let currentStep = 1;
+
+// ============================================================
+// Init
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderModels();
+
+  // Pill labels fix — the nested label trick
+  document.querySelectorAll('.radio-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const input = pill.querySelector('input');
+      if (input) { input.checked = true; input.dispatchEvent(new Event('change')); }
+    });
+  });
+
+  // Toggle nama fields saat acara dipilih
+  document.querySelectorAll('input[name="acara"]').forEach(radio => {
+    radio.addEventListener('change', toggleNamaFields);
+  });
+
+  // Tulisan nama diisi manual oleh customer — tidak ada auto-fill
+  // namaSingle: tidak auto-fill, customer isi sendiri
+});
+
+function toggleNamaFields() {
+  const acara = document.querySelector('input[name="acara"]:checked')?.value || '';
+  const isDouble = ['Engagement', 'Wedding'].includes(acara);
+  document.getElementById('namaDoubleWrap').style.display = isDouble ? '' : 'none';
+  document.getElementById('namaSingleWrap').style.display = isDouble ? 'none' : '';
+  // Auto-fill tulisanNama
+  // Tulisan nama diisi manual — tidak ada auto-fill
+}
+
+function renderModels() {
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = MODELS.map(m => `
+    <div class="model-card" id="mc-${m.id}" onclick="selectModel('${m.id}')">
+      ${m.img
+        ? `<img class="model-img" src="${m.img}" alt="${m.name}">`
+        : `<div class="model-img-placeholder"><span>${m.emoji}</span><small>Foto segera hadir</small></div>`
+      }
+      <div class="model-info">
+        <div class="model-name">${m.name}</div>
+        <div class="model-price">${m.price ? 'Rp ' + m.price.toLocaleString('id-ID') : 'Harga custom'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectModel(id) {
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('mc-' + id).classList.add('selected');
+  selectedModel = MODELS.find(m => m.id === id);
+}
+
+// ============================================================
+// Navigation & Validation
+// ============================================================
+function goToStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  currentStep = n;
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  updateProgress(n);
+  if (n === 4) buildPreview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress(n) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    const lbl = document.getElementById('lbl' + i);
+    dot.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+    if (lbl) lbl.className = i === n ? 'active' : '';
+    if (i < 4) {
+      const line = document.getElementById('line' + i);
+      if (line) line.className = 'step-line' + (i < n ? ' done' : '');
+    }
+  }
+}
+
+function validateStep(step) {
+  if (step === 1) {
+    const nama = document.getElementById('namaPemesan').value.trim();
+    const wa = document.getElementById('noWA').value.trim();
+    const acara = document.querySelector('input[name="acara"]:checked');
+    const tgl = document.getElementById('tanggalAcara').value;
+    const jam = document.getElementById('jamAcara').value;
+    const tulisan = document.getElementById('tulisanNama').value.trim();
+    if (!nama || !wa || !acara || !tgl || !jam || !tulisan) {
+      alert('Lengkapi semua field yang wajib diisi (bertanda *)');
+      return false;
+    }
+    return true;
+  }
+  if (step === 2) {
+    if (!selectedModel) {
+      alert('Pilih model dekorasi terlebih dahulu');
+      return false;
+    }
+    return true;
+  }
+  if (step === 3) {
+    const alamat = document.getElementById('alamat').value.trim();
+    const atasnama = document.getElementById('atasNama').value.trim();
+    const lokasiDekor = document.querySelector('input[name="lokasiDekor"]:checked');
+    const tembok = document.querySelector('input[name="tembok"]:checked');
+    if (!alamat || !atasnama || !lokasiDekor || !tembok) {
+      alert('Lengkapi semua field yang wajib diisi (bertanda *)');
+      return false;
+    }
+    return true;
+  }
+  return true;
+}
+
+// ============================================================
+// Preview
+// ============================================================
+function buildPreview() {
+  const nama = document.getElementById('namaPemesan').value;
+  const wa = document.getElementById('noWA').value;
+  const acara = document.querySelector('input[name="acara"]:checked')?.value || '—';
+  const tgl = document.getElementById('tanggalAcara').value;
+  const jam = document.getElementById('jamAcara').value;
+  const namaP = document.getElementById('namaPerempuan').value;
+  const namaL = document.getElementById('namaLaki').value;
+  const tulisan = document.getElementById('tulisanNama').value;
+  const catatan = document.getElementById('catatanDekorasi').value;
+  const alamat = document.getElementById('alamat').value;
+  const atasnama = document.getElementById('atasNama').value;
+  const lokasiDekor = document.querySelector('input[name="lokasiDekor"]:checked')?.value || '—';
+  const tembok = document.querySelector('input[name="tembok"]:checked')?.value || '—';
+  const gmaps = document.getElementById('gmaps').value;
+
+  document.getElementById('prev-nama').textContent = nama;
+  document.getElementById('prev-acara').textContent = acara;
+  document.getElementById('prev-wa').textContent = wa;
+
+  const tglFormatted = tgl ? new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) : '—';
+  document.getElementById('prev-tanggal').textContent = `${tglFormatted}, ${jam}`;
+  document.getElementById('prev-tulisan').textContent = tulisan || '—';
+  document.getElementById('prev-alamat').textContent = alamat;
+  document.getElementById('prev-atasnama').textContent = atasnama;
+  document.getElementById('prev-lokasi').textContent = `${lokasiDekor} · ${tembok}`;
+  document.getElementById('prev-catatan').textContent = catatan || '(tidak ada)';
+
+  if (selectedModel) {
+    document.getElementById('prev-model').textContent = selectedModel.name;
+    document.getElementById('prev-harga').textContent = selectedModel.price
+      ? 'Rp ' + selectedModel.price.toLocaleString('id-ID') + ' (estimasi)'
+      : 'Harga custom — akan dikonfirmasi';
+
+    const imgDiv = document.getElementById('prev-model-img');
+    if (selectedModel.img) {
+      imgDiv.innerHTML = `<img src="${selectedModel.img}" style="width:100%;height:100%;object-fit:cover">`;
+    } else {
+      imgDiv.innerHTML = `<span>${selectedModel.emoji} ${selectedModel.name}</span>`;
+    }
+  }
+
+  if (gmaps) {
+    document.getElementById('prev-gmaps-row').style.display = 'flex';
+    document.getElementById('prev-gmaps').href = gmaps;
+  } else {
+    document.getElementById('prev-gmaps-row').style.display = 'none';
+  }
+
+  // WA link for success
+  const msg = encodeURIComponent(
+    `Halo Hanaya Blom! Saya ${nama} baru saja mengisi form booking dekorasi untuk acara ${acara} pada ${tglFormatted}. Mohon konfirmasinya ya 🌸`
+  );
+  document.getElementById('waConfirmLink').href = `https://wa.me/${WA_NUMBER}?text=${msg}`;
+}
+
+// ============================================================
+// Submit
+// ============================================================
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Mengirim...';
+  btn.disabled = true;
+
+  const acara = document.querySelector('input[name="acara"]:checked')?.value;
+  const isDouble = ['Engagement', 'Wedding'].includes(acara);
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    namaPemesan: document.getElementById('namaPemesan').value,
+    noWA: document.getElementById('noWA').value,
+    acara,
+    tanggal: document.getElementById('tanggalAcara').value,
+    jam: document.getElementById('jamAcara').value,
+    namaPerempuan: isDouble ? document.getElementById('namaPerempuan').value : '',
+    namaLaki: isDouble ? document.getElementById('namaLaki').value : '',
+    tulisanNama: document.getElementById('tulisanNama').value,
+    modelId: selectedModel?.id,
+    modelNama: selectedModel?.name,
+    modelHarga: selectedModel?.price || 'Custom',
+    catatanDekorasi: document.getElementById('catatanDekorasi').value,
+    alamat: document.getElementById('alamat').value,
+    atasNama: document.getElementById('atasNama').value,
+    lokasiDekor: document.querySelector('input[name="lokasiDekor"]:checked')?.value,
+    tembok: document.querySelector('input[name="tembok"]:checked')?.value,
+    gmaps: document.getElementById('gmaps').value,
+    status: 'Baru'
+  };
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    showSuccess();
+  } catch (err) {
+    alert('Gagal mengirim. Coba lagi atau hubungi kami via WhatsApp.');
+    btn.textContent = 'Kirim Booking ✓';
+    btn.disabled = false;
+  }
+}
+
+function showSuccess() {
+  document.getElementById('mainForm').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

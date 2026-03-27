@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Admin — Hanaya Blom</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EE;
+    --warm-white: #FDFAF7;
+    --blush: #E8D5C4;
+    --rose: #C4956A;
+    --rose-deep: #A67452;
+    --sage: #8A9E8C;
+    --charcoal: #2C2C2C;
+    --muted: #8A8278;
+    --border: #DDD5CB;
+    --danger: #C0392B;
+    --success: #5A8F6A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: var(--charcoal);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .header-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--cream);
+    flex: 1;
+  }
+  .header-brand span { color: var(--rose); font-style: normal; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; display: block; font-family: 'DM Sans', sans-serif; }
+  .btn-refresh {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Setup Banner */
+  .setup-banner {
+    background: #FFF3CD;
+    border-bottom: 1px solid #F0D060;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #7D5A00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .setup-banner input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #F0D060;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    background: white;
+  }
+  .setup-banner button {
+    padding: 6px 14px;
+    background: var(--rose);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+  }
+
+  /* Stats Strip */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-box {
+    background: var(--warm-white);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+  .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 2px; }
+
+  /* Filter Bar */
+  .filter-bar {
+    padding: 12px 16px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-bar input, .filter-bar select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--cream);
+    color: var(--charcoal);
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--rose); }
+
+  /* Loading / Empty */
+  .loading, .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .loading .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--rose);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Booking Cards */
+  .cards-list {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .booking-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .booking-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+  .card-top {
+    padding: 12px 14px 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--blush);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--rose-deep);
+    font-weight: 600;
+  }
+  .card-name-wrap { flex: 1; }
+  .card-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--charcoal);
+  }
+  .card-wa { font-size: 12px; color: var(--muted); }
+  .card-acara {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--blush);
+    color: var(--rose-deep);
+    flex-shrink: 0;
+  }
+  .card-status {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .card-status.baru { background: #E3F4E8; color: var(--success); }
+  .card-status.proses { background: #FFF0D0; color: #A07000; }
+  .card-status.selesai { background: #E8E8E8; color: var(--muted); }
+
+  .card-body {
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 10px;
+  }
+  .card-row { }
+  .card-row-full { grid-column: 1 / -1; }
+  .card-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; }
+  .card-val { font-size: 12px; color: var(--charcoal); margin-top: 1px; }
+
+  .card-actions {
+    padding: 8px 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .action-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--charcoal);
+    transition: all 0.15s;
+  }
+  .action-btn:hover { background: var(--cream); }
+  .action-btn.edit { border-color: var(--rose); color: var(--rose); }
+  .action-btn.edit:hover { background: var(--rose); color: white; }
+  .action-btn.delete { border-color: var(--danger); color: var(--danger); }
+  .action-btn.delete:hover { background: var(--danger); color: white; }
+  .action-btn.wa { border-color: #25D366; color: #25D366; }
+  .action-btn.wa:hover { background: #25D366; color: white; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--warm-white);
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    overflow-y: auto;
+    padding: 20px 18px 40px;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-close {
+    background: none; border: none;
+    font-size: 22px; cursor: pointer;
+    color: var(--muted);
+    line-height: 1;
+  }
+  .modal .field-group { margin-bottom: 14px; }
+  .modal label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .modal input, .modal select, .modal textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--charcoal);
+    background: var(--cream);
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--rose); }
+  .modal textarea { resize: vertical; min-height: 70px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+  .btn-save {
+    flex: 1; padding: 13px;
+    background: var(--rose); color: white;
+    border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-cancel-modal {
+    padding: 13px 20px;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .select-wrap { position: relative; }
+  .select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <span>Admin Dashboard</span>
+    Hanaya Blom
+  </div>
+  <button class="btn-refresh" onclick="loadData()">↻ Refresh</button>
+</div>
+
+<!-- Setup Banner -->
+<div class="setup-banner" id="setupBanner">
+  ⚙️ Masukkan URL Apps Script:
+  <input type="text" id="urlInput" placeholder="https://script.google.com/macros/s/...">
+  <button onclick="saveUrl()">Simpan</button>
+</div>
+
+<!-- Stats -->
+<div class="stats-strip">
+  <div class="stat-box">
+    <div class="stat-val" id="statTotal">—</div>
+    <div class="stat-label">Total Booking</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val" id="statBaru">—</div>
+    <div class="stat-label">Baru</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val" id="statBulan">—</div>
+    <div class="stat-label">Bulan Ini</div>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="filter-bar">
+  <input type="text" id="searchInput" placeholder="🔍 Cari nama / WA..." oninput="filterCards()">
+  <div class="select-wrap" style="flex:0 0 auto">
+    <select id="filterAcara" onchange="filterCards()">
+      <option value="">Semua Acara</option>
+      <option>Engagement</option>
+      <option>Wedding</option>
+      <option>Khitan</option>
+      <option>Aqiqah</option>
+      <option>Birthday</option>
+      <option>Custom</option>
+    </select>
+  </div>
+  <div class="select-wrap" style="flex:0 0 auto">
+    <select id="filterStatus" onchange="filterCards()">
+      <option value="">Semua Status</option>
+      <option>Baru</option>
+      <option>Proses</option>
+      <option>Selesai</option>
+    </select>
+  </div>
+</div>
+
+<!-- Cards -->
+<div id="cardsList" class="cards-list">
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Memuat data booking...</p>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">
+      Edit Booking
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="editRowIndex">
+
+    <div class="field-group">
+      <label>Status</label>
+      <div class="select-wrap">
+        <select id="editStatus">
+          <option>Baru</option>
+          <option>Proses</option>
+          <option>Selesai</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Nama Pemesan</label>
+      <input type="text" id="editNama">
+    </div>
+    <div class="field-group">
+      <label>No. WhatsApp</label>
+      <input type="tel" id="editWA">
+    </div>
+    <div class="field-group">
+      <label>Acara</label>
+      <div class="select-wrap">
+        <select id="editAcara">
+          <option>Engagement</option>
+          <option>Wedding</option>
+          <option>Khitan</option>
+          <option>Aqiqah</option>
+          <option>Birthday</option>
+          <option>Custom</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field-group">
+        <label>Tanggal</label>
+        <input type="date" id="editTanggal">
+      </div>
+      <div class="field-group">
+        <label>Jam</label>
+        <input type="time" id="editJam">
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Tulisan Nama</label>
+      <input type="text" id="editTulisan">
+    </div>
+    <div class="field-group">
+      <label>Model Dekorasi</label>
+      <input type="text" id="editModel">
+    </div>
+    <div class="field-group">
+      <label>Catatan Dekorasi</label>
+      <textarea id="editCatatan"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Alamat</label>
+      <textarea id="editAlamat"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Atas Nama</label>
+      <input type="text" id="editAtasNama">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel-modal" onclick="closeModal()">Batal</button>
+      <button class="btn-save" onclick="saveEdit()">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const STORAGE_KEY = 'hanayablom_admin_url';
+let APPS_SCRIPT_URL = localStorage.getItem(STORAGE_KEY) || '';
+let allData = [];
+let editingRow = null;
+
+// ============================================================
+// Init
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  if (APPS_SCRIPT_URL) {
+    document.getElementById('setupBanner').style.display = 'none';
+    document.getElementById('urlInput').value = APPS_SCRIPT_URL;
+    loadData();
+  }
+});
+
+function saveUrl() {
+  const val = document.getElementById('urlInput').value.trim();
+  if (!val) return alert('URL tidak boleh kosong');
+  APPS_SCRIPT_URL = val;
+  localStorage.setItem(STORAGE_KEY, val);
+  document.getElementById('setupBanner').style.display = 'none';
+  loadData();
+}
+
+// ============================================================
+// Load Data
+// ============================================================
+async function loadData() {
+  if (!APPS_SCRIPT_URL) return;
+  showLoading();
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=getAll&t=${Date.now()}`);
+    const json = await res.json();
+    allData = json.data || [];
+    renderStats();
+    renderCards(allData);
+  } catch (e) {
+    document.getElementById('cardsList').innerHTML = `<div class="empty">⚠️ Gagal memuat data.<br><small>Pastikan URL Apps Script sudah benar dan CORS diizinkan.</small></div>`;
+  }
+}
+
+function showLoading() {
+  document.getElementById('cardsList').innerHTML = `<div class="loading"><div class="spinner"></div><p>Memuat data...</p></div>`;
+}
+
+// ============================================================
+// Stats
+// ============================================================
+function renderStats() {
+  const now = new Date();
+  const bulanIni = allData.filter(d => {
+    const tgl = new Date(d.tanggal);
+    return tgl.getMonth() === now.getMonth() && tgl.getFullYear() === now.getFullYear();
+  });
+  const baru = allData.filter(d => (d.status || 'Baru') === 'Baru');
+  document.getElementById('statTotal').textContent = allData.length;
+  document.getElementById('statBaru').textContent = baru.length;
+  document.getElementById('statBulan').textContent = bulanIni.length;
+}
+
+// ============================================================
+// Render Cards
+// ============================================================
+function renderCards(data) {
+  const list = document.getElementById('cardsList');
+  if (!data.length) {
+    list.innerHTML = `<div class="empty">🌸 Belum ada data booking.</div>`;
+    return;
+  }
+
+  // Sort by tanggal ascending
+  const sorted = [...data].sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+  list.innerHTML = sorted.map((d, i) => {
+    const status = d.status || 'Baru';
+    const statusClass = status.toLowerCase();
+    const initial = (d.namaPemesan || '?').charAt(0).toUpperCase();
+    const tglFormatted = d.tanggal
+      ? new Date(d.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
+      : '—';
+    const waLink = `https://wa.me/${(d.noWA || '').replace(/[^0-9]/g,'').replace(/^0/, '62')}`;
+
+    return `
+    <div class="booking-card" id="card-${d.rowIndex}">
+      <div class="card-top">
+        <div class="card-avatar">${initial}</div>
+        <div class="card-name-wrap">
+          <div class="card-name">${d.namaPemesan || '—'}</div>
+          <div class="card-wa">${d.noWA || '—'}</div>
+        </div>
+        <span class="card-acara">${d.acara || '—'}</span>
+        <span class="card-status ${statusClass}">${status}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-row">
+          <div class="card-lbl">Tanggal & Jam</div>
+          <div class="card-val">${tglFormatted}, ${d.jam || '—'}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-lbl">Model</div>
+          <div class="card-val">${d.modelNama || '—'}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-lbl">Tulisan Nama</div>
+          <div class="card-val">${d.tulisanNama || '—'}</div>
+        </div>
+        <div class="card-row">
+          <div class="card-lbl">Harga</div>
+          <div class="card-val" style="color:var(--rose)">${d.modelHarga && d.modelHarga !== 'Custom' ? 'Rp ' + Number(d.modelHarga).toLocaleString('id-ID') : d.modelHarga || '—'}</div>
+        </div>
+        <div class="card-row card-row-full">
+          <div class="card-lbl">Alamat</div>
+          <div class="card-val">${d.alamat || '—'}</div>
+        </div>
+        ${d.catatanDekorasi ? `
+        <div class="card-row card-row-full">
+          <div class="card-lbl">Catatan</div>
+          <div class="card-val">${d.catatanDekorasi}</div>
+        </div>` : ''}
+      </div>
+      <div class="card-actions">
+        ${d.gmaps ? `<a href="${d.gmaps}" target="_blank"><button class="action-btn">📍 Maps</button></a>` : ''}
+        <a href="${waLink}" target="_blank"><button class="action-btn wa">💬 WA</button></a>
+        <button class="action-btn edit" onclick="openEdit(${d.rowIndex})">✏️ Edit</button>
+        <button class="action-btn delete" onclick="deleteRow(${d.rowIndex}, '${(d.namaPemesan||'').replace(/'/g,"\\'")}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// Filter
+// ============================================================
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const acara = document.getElementById('filterAcara').value;
+  const status = document.getElementById('filterStatus').value;
+
+  const filtered = allData.filter(d => {
+    const matchQ = !q || (d.namaPemesan || '').toLowerCase().includes(q) || (d.noWA || '').includes(q);
+    const matchAcara = !acara || d.acara === acara;
+    const matchStatus = !status || (d.status || 'Baru') === status;
+    return matchQ && matchAcara && matchStatus;
+  });
+
+  renderCards(filtered);
+}
+
+// ============================================================
+// Edit Modal
+// ============================================================
+function openEdit(rowIndex) {
+  const d = allData.find(x => x.rowIndex === rowIndex);
+  if (!d) return;
+  editingRow = d;
+
+  document.getElementById('editRowIndex').value = rowIndex;
+  document.getElementById('editNama').value = d.namaPemesan || '';
+  document.getElementById('editWA').value = d.noWA || '';
+  document.getElementById('editAcara').value = d.acara || '';
+  document.getElementById('editTanggal').value = d.tanggal || '';
+  document.getElementById('editJam').value = d.jam || '';
+  document.getElementById('editTulisan').value = d.tulisanNama || '';
+  document.getElementById('editModel').value = d.modelNama || '';
+  document.getElementById('editCatatan').value = d.catatanDekorasi || '';
+  document.getElementById('editAlamat').value = d.alamat || '';
+  document.getElementById('editAtasNama').value = d.atasNama || '';
+  document.getElementById('editStatus').value = d.status || 'Baru';
+
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('editModal').classList.remove('open');
+  editingRow = null;
+}
+
+async function saveEdit() {
+  const rowIndex = document.getElementById('editRowIndex').value;
+  const payload = {
+    action: 'update',
+    rowIndex: Number(rowIndex),
+    namaPemesan: document.getElementById('editNama').value,
+    noWA: document.getElementById('editWA').value,
+    acara: document.getElementById('editAcara').value,
+    tanggal: document.getElementById('editTanggal').value,
+    jam: document.getElementById('editJam').value,
+    tulisanNama: document.getElementById('editTulisan').value,
+    modelNama: document.getElementById('editModel').value,
+    catatanDekorasi: document.getElementById('editCatatan').value,
+    alamat: document.getElementById('editAlamat').value,
+    atasNama: document.getElementById('editAtasNama').value,
+    status: document.getElementById('editStatus').value,
+  };
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (json.success) {
+      closeModal();
+      loadData();
+    } else {
+      alert('Gagal menyimpan: ' + (json.error || 'Unknown error'));
+    }
+  } catch (e) {
+    alert('Error koneksi. Coba lagi.');
+  }
+}
+
+// ============================================================
+// Delete
+// ============================================================
+async function deleteRow(rowIndex, nama) {
+  if (!confirm(`Hapus booking dari "${nama}"?`)) return;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', rowIndex })
+    });
+    const json = await res.json();
+    if (json.success) {
+      loadData();
+    } else {
+      alert('Gagal menghapus: ' + (json.error || 'Unknown error'));
+    }
+  } catch (e) {
+    alert('Error koneksi.');
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('editModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
