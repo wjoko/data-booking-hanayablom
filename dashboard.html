@@ -330,9 +330,33 @@
   }
   .select-wrap { position: relative; }
   .select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 12px; }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.success { border-left: 4px solid var(--sage); }
+  .toast.error { border-left: 4px solid var(--danger); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
+
+<div id="toast" class="toast"></div>
 
 <div class="header">
   <div class="header-brand">
@@ -670,6 +694,16 @@ function closeModal() {
   editingRow = null;
 }
 
+// ============================================================
+// Toast Notification
+// ============================================================
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
 async function saveEdit() {
   const rowIndex = document.getElementById('editRowIndex').value;
   const payload = {
@@ -696,9 +730,10 @@ async function saveEdit() {
       body: JSON.stringify(payload)
     });
     closeModal();
+    showToast('✓ Data berhasil diperbarui');
     setTimeout(() => loadData(), 1500);
   } catch (e) {
-    alert('Error koneksi. Coba lagi.');
+    showToast('✗ Gagal menyimpan, coba lagi', 'error');
   }
 }
 
@@ -714,9 +749,10 @@ async function deleteRow(rowIndex, nama) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'delete', rowIndex })
     });
+    showToast('🗑️ Data berhasil dihapus');
     setTimeout(() => loadData(), 1500);
   } catch (e) {
-    alert('Error koneksi.');
+    showToast('✗ Gagal menghapus, coba lagi', 'error');
   }
 }
 
