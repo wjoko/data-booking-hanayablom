@@ -677,18 +677,14 @@ async function saveEdit() {
   };
 
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
+    await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    const json = await res.json();
-    if (json.success) {
-      closeModal();
-      loadData();
-    } else {
-      alert('Gagal menyimpan: ' + (json.error || 'Unknown error'));
-    }
+    closeModal();
+    setTimeout(() => loadData(), 1500);
   } catch (e) {
     alert('Error koneksi. Coba lagi.');
   }
@@ -700,17 +696,13 @@ async function saveEdit() {
 async function deleteRow(rowIndex, nama) {
   if (!confirm(`Hapus booking dari "${nama}"?`)) return;
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
+    await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'delete', rowIndex })
     });
-    const json = await res.json();
-    if (json.success) {
-      loadData();
-    } else {
-      alert('Gagal menghapus: ' + (json.error || 'Unknown error'));
-    }
+    setTimeout(() => loadData(), 1500);
   } catch (e) {
     alert('Error koneksi.');
   }
