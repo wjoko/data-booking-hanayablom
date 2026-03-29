@@ -153,15 +153,40 @@
   .field-group textarea { resize: vertical; min-height: 70px; }
   .field-group .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-  /* Preview foto di modal */
-  .foto-preview {
+  /* Upload foto */
+  .upload-area {
     width: 100%; aspect-ratio: 4/3;
-    border-radius: 8px; overflow: hidden;
-    background: linear-gradient(135deg, var(--blush), var(--cream));
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 10px; font-size: 12px; color: var(--muted);
+    border: 2px dashed var(--border);
+    border-radius: 10px; overflow: hidden;
+    background: var(--cream);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer;
+    transition: border-color 0.2s;
+    margin-bottom: 10px; position: relative;
   }
-  .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .upload-area:hover { border-color: var(--rose); }
+  .upload-area.has-img { border-style: solid; border-color: var(--rose); }
+  .upload-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  .upload-area input[type="file"] { display: none; }
+  .upload-icon { font-size: 28px; position: relative; z-index: 1; }
+  .upload-text { font-size: 12px; color: var(--muted); position: relative; z-index: 1; text-align: center; }
+  .upload-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s; z-index: 2;
+  }
+  .upload-area.has-img:hover .upload-overlay { opacity: 1; }
+  .upload-overlay span { color: white; font-size: 12px; font-weight: 500; }
+  .upload-progress {
+    width: 100%; height: 3px; background: var(--border);
+    border-radius: 2px; margin-bottom: 10px; display: none;
+  }
+  .upload-progress-bar {
+    height: 100%; background: var(--rose);
+    border-radius: 2px; width: 0%;
+    transition: width 0.3s;
+  }
 
   .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
   .btn-save {
@@ -213,17 +238,6 @@
   <button class="btn-add" onclick="openModal()">+ Tambah Model</button>
 </div>
 
-<!-- Panduan Google Drive -->
-<div class="guide-box">
-  <div class="guide-title">📸 Cara dapat link foto dari Google Drive</div>
-  <div class="guide-steps">
-    1. Upload foto ke <b>Google Drive</b><br>
-    2. Klik kanan foto → <b>Share</b> → ubah akses ke <b>"Anyone with the link"</b><br>
-    3. Klik <b>Copy link</b> — paste di kolom Link Foto di bawah<br>
-    4. Link otomatis dikonversi ke format gambar langsung ✓
-  </div>
-</div>
-
 <!-- Grid -->
 <div id="katalogGrid" class="katalog-grid">
   <div class="empty" style="grid-column:1/-1">Memuat katalog...</div>
@@ -238,16 +252,17 @@
     </div>
 
     <input type="hidden" id="editRowIndex">
+    <input type="hidden" id="savedFotoUrl">
 
-    <!-- Preview foto -->
-    <div class="foto-preview" id="fotoPreview">
-      <span>Preview foto akan muncul di sini</span>
+    <!-- Upload area -->
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+      <span class="upload-icon">📷</span>
+      <div class="upload-text">Tap untuk pilih foto<br><small>dari HP atau PC</small></div>
+      <div class="upload-overlay"><span>Ganti foto</span></div>
     </div>
-
-    <div class="field-group">
-      <label>Link Foto Google Drive <span style="color:var(--rose)">*</span></label>
-      <input type="url" id="inputFoto" placeholder="https://drive.google.com/file/d/..." oninput="previewFoto()">
-      <div class="helper">Paste link share dari Google Drive</div>
+    <div class="upload-progress" id="uploadProgress">
+      <div class="upload-progress-bar" id="uploadProgressBar"></div>
     </div>
 
     <div class="field-group">
@@ -278,6 +293,310 @@ const STORAGE_KEY = 'hanayablom_admin_url';
 let APPS_SCRIPT_URL = localStorage.getItem(STORAGE_KEY) || '';
 let katalogData = [];
 let isEditing = false;
+let selectedFileBase64 = null;
+let selectedFileMime = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (APPS_SCRIPT_URL) {
+    document.getElementById('setupBanner').style.display = 'none';
+    loadKatalog();
+  }
+});
+
+function saveUrl() {
+  const val = document.getElementById('urlInput').value.trim();
+  if (!val) return alert('URL tidak boleh kosong');
+  APPS_SCRIPT_URL = val;
+  localStorage.setItem(STORAGE_KEY, val);
+  document.getElementById('setupBanner').style.display = 'none';
+  loadKatalog();
+}
+
+// ============================================================
+// Load Katalog (JSONP)
+// ============================================================
+function loadKatalog() {
+  const callbackName = 'katalogCallback_' + Date.now();
+  const script = document.createElement('script');
+
+  const timeout = setTimeout(() => {
+    document.getElementById('katalogGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat katalog.</div>`;
+    delete window[callbackName];
+    document.body.removeChild(script);
+  }, 10000);
+
+  window[callbackName] = function(json) {
+    clearTimeout(timeout);
+    delete window[callbackName];
+    document.body.removeChild(script);
+    katalogData = json.data || [];
+    renderKatalog();
+  };
+
+  script.src = `${APPS_SCRIPT_URL}?action=getKatalog&callback=${callbackName}&t=${Date.now()}`;
+  document.body.appendChild(script);
+}
+
+// ============================================================
+// Render
+// ============================================================
+function renderKatalog() {
+  const grid = document.getElementById('katalogGrid');
+  if (!katalogData.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">🌸 Belum ada model dekorasi.<br>Tap <b>+ Tambah Model</b> untuk mulai.</div>`;
+    return;
+  }
+  grid.innerHTML = katalogData.map(d => {
+    const imgUrl = convertDriveUrl(d.foto);
+    const hargaFormatted = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') : 'Harga custom';
+    return `
+    <div class="katalog-card">
+      <div class="katalog-img">
+        ${imgUrl ? `<img src="${imgUrl}" alt="${d.nama}" onerror="this.parentElement.innerHTML='🌸'">` : '🌸'}
+      </div>
+      <div class="katalog-info">
+        <div class="katalog-nama">${d.nama || '—'}</div>
+        <div class="katalog-harga">${hargaFormatted}</div>
+        ${d.keterangan ? `<div class="katalog-ket">${d.keterangan}</div>` : ''}
+      </div>
+      <div class="katalog-actions">
+        <button class="action-btn edit" onclick="openEdit(${d.rowIndex})">✏️ Edit</button>
+        <button class="action-btn delete" onclick="hapusModel(${d.rowIndex}, '${(d.nama||'').replace(/'/g,"\\'")}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function convertDriveUrl(url) {
+  if (!url) return '';
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
+  return url;
+}
+
+// ============================================================
+// File Upload Handler
+// ============================================================
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('Ukuran foto max 5MB', 'error');
+    return;
+  }
+
+  selectedFileMime = file.type;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    selectedFileBase64 = e.target.result.split(',')[1]; // ambil base64 saja
+    const uploadArea = document.getElementById('uploadArea');
+    uploadArea.classList.add('has-img');
+    uploadArea.innerHTML = `
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+      <img src="${e.target.result}" alt="preview">
+      <div class="upload-overlay"><span>📷 Ganti foto</span></div>
+    `;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
+// Modal
+// ============================================================
+function openModal() {
+  isEditing = false;
+  selectedFileBase64 = null;
+  selectedFileMime = null;
+  document.getElementById('modalTitle').textContent = 'Tambah Model';
+  document.getElementById('editRowIndex').value = '';
+  document.getElementById('savedFotoUrl').value = '';
+  document.getElementById('inputNama').value = '';
+  document.getElementById('inputHarga').value = '';
+  document.getElementById('inputKet').value = '';
+  resetUploadArea();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openEdit(rowIndex) {
+  const d = katalogData.find(x => x.rowIndex === rowIndex);
+  if (!d) return;
+  isEditing = true;
+  selectedFileBase64 = null;
+  selectedFileMime = null;
+  document.getElementById('modalTitle').textContent = 'Edit Model';
+  document.getElementById('editRowIndex').value = rowIndex;
+  document.getElementById('savedFotoUrl').value = d.foto || '';
+  document.getElementById('inputNama').value = d.nama || '';
+  document.getElementById('inputHarga').value = d.harga || '';
+  document.getElementById('inputKet').value = d.keterangan || '';
+
+  // Tampilkan foto yang sudah ada
+  const imgUrl = convertDriveUrl(d.foto);
+  const uploadArea = document.getElementById('uploadArea');
+  if (imgUrl) {
+    uploadArea.classList.add('has-img');
+    uploadArea.innerHTML = `
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+      <img src="${imgUrl}" alt="preview" onerror="this.style.display='none'">
+      <div class="upload-overlay"><span>📷 Ganti foto</span></div>
+    `;
+  } else {
+    resetUploadArea();
+  }
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function resetUploadArea() {
+  const uploadArea = document.getElementById('uploadArea');
+  uploadArea.classList.remove('has-img');
+  uploadArea.innerHTML = `
+    <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+    <span class="upload-icon">📷</span>
+    <div class="upload-text">Tap untuk pilih foto<br><small>dari HP atau PC</small></div>
+    <div class="upload-overlay"><span>Ganti foto</span></div>
+  `;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ============================================================
+// Save — upload foto dulu ke Drive, lalu simpan ke Sheets
+// ============================================================
+async function saveModel() {
+  const nama = document.getElementById('inputNama').value.trim();
+  const harga = document.getElementById('inputHarga').value.trim();
+  const existingFoto = document.getElementById('savedFotoUrl').value;
+
+  if (!nama) { showToast('Nama model wajib diisi', 'error'); return; }
+  if (!selectedFileBase64 && !existingFoto) { showToast('Pilih foto terlebih dahulu', 'error'); return; }
+
+  const saveBtn = document.querySelector('.btn-save');
+  saveBtn.textContent = selectedFileBase64 ? 'Mengupload foto...' : 'Menyimpan...';
+  saveBtn.disabled = true;
+
+  let fotoUrl = existingFoto;
+
+  // Upload foto baru kalau ada
+  if (selectedFileBase64) {
+    try {
+      showProgress(30);
+      const uploadPayload = {
+        action: 'uploadFoto',
+        fileBase64: selectedFileBase64,
+        mimeType: selectedFileMime,
+        fileName: `dekorasi_${Date.now()}`
+      };
+      showProgress(60);
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(uploadPayload)
+      });
+      showProgress(100);
+      // Karena no-cors kita tidak bisa baca response,
+      // kita pakai JSONP untuk ambil URL foto yang baru diupload
+      fotoUrl = await getLastUploadedUrl();
+    } catch (e) {
+      showToast('✗ Gagal upload foto', 'error');
+      saveBtn.textContent = 'Simpan';
+      saveBtn.disabled = false;
+      hideProgress();
+      return;
+    }
+  }
+
+  hideProgress();
+  saveBtn.textContent = 'Menyimpan...';
+
+  const rowIndex = document.getElementById('editRowIndex').value;
+  const payload = {
+    action: isEditing ? 'updateKatalog' : 'insertKatalog',
+    rowIndex: rowIndex ? Number(rowIndex) : null,
+    nama, harga, foto: fotoUrl,
+    keterangan: document.getElementById('inputKet').value,
+    aktif: 'Ya'
+  };
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    closeModal();
+    showToast(isEditing ? '✓ Model berhasil diperbarui' : '✓ Model berhasil ditambahkan');
+    setTimeout(() => loadKatalog(), 1200);
+  } catch (e) {
+    showToast('✗ Gagal menyimpan, coba lagi', 'error');
+  }
+
+  saveBtn.textContent = 'Simpan';
+  saveBtn.disabled = false;
+}
+
+// Ambil URL foto terakhir yang diupload via JSONP
+function getLastUploadedUrl() {
+  return new Promise((resolve) => {
+    const callbackName = 'uploadCb_' + Date.now();
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      resolve('');
+      delete window[callbackName];
+      if (script.parentNode) document.body.removeChild(script);
+    }, 8000);
+    window[callbackName] = function(json) {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve(json.url || '');
+    };
+    script.src = `${APPS_SCRIPT_URL}?action=getLastUpload&callback=${callbackName}&t=${Date.now()}`;
+    document.body.appendChild(script);
+  });
+}
+
+function showProgress(pct) {
+  document.getElementById('uploadProgress').style.display = 'block';
+  document.getElementById('uploadProgressBar').style.width = pct + '%';
+}
+function hideProgress() {
+  setTimeout(() => {
+    document.getElementById('uploadProgress').style.display = 'none';
+    document.getElementById('uploadProgressBar').style.width = '0%';
+  }, 400);
+}
+
+async function hapusModel(rowIndex, nama) {
+  if (!confirm(`Hapus model "${nama}"?`)) return;
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteKatalog', rowIndex })
+    });
+    showToast('🗑️ Model berhasil dihapus');
+    setTimeout(() => loadKatalog(), 1000);
+  } catch (e) {
+    showToast('✗ Gagal menghapus', 'error');
+  }
+}
+
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
 
 document.addEventListener('DOMContentLoaded', () => {
   if (APPS_SCRIPT_URL) {
