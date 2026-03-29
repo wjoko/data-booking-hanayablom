@@ -20,197 +20,58 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; padding-bottom: 60px; }
-
-  .header {
-    background: var(--charcoal);
-    padding: 16px 20px;
-    display: flex; align-items: center; gap: 12px;
-    position: sticky; top: 0; z-index: 200;
-  }
+  .header { background: var(--charcoal); padding: 16px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 200; }
   .header-brand { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: var(--cream); flex: 1; }
   .header-brand span { color: var(--rose); font-style: normal; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; display: block; font-family: 'DM Sans', sans-serif; }
-
-  .setup-banner {
-    background: #FFF3CD; border-bottom: 1px solid #F0D060;
-    padding: 10px 16px; font-size: 12px; color: #7D5A00;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .setup-banner input {
-    flex: 1; padding: 6px 10px; border: 1px solid #F0D060;
-    border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; background: white;
-  }
-  .setup-banner button {
-    padding: 6px 14px; background: var(--rose); color: white;
-    border: none; border-radius: 6px; font-size: 12px; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; white-space: nowrap;
-  }
-
-  .toolbar {
-    padding: 14px 16px;
-    background: var(--warm-white);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  .setup-banner { background: #FFF3CD; border-bottom: 1px solid #F0D060; padding: 10px 16px; font-size: 12px; color: #7D5A00; display: flex; align-items: center; gap: 8px; }
+  .setup-banner input { flex: 1; padding: 6px 10px; border: 1px solid #F0D060; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; background: white; }
+  .setup-banner button { padding: 6px 14px; background: var(--rose); color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .toolbar { padding: 14px 16px; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .toolbar-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; }
-  .btn-add {
-    background: var(--rose); color: white;
-    border: none; border-radius: 8px;
-    padding: 9px 18px; font-size: 13px; font-weight: 500;
-    font-family: 'DM Sans', sans-serif; cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-  }
+  .btn-add { background: var(--rose); color: white; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .btn-add:hover { background: var(--rose-deep); }
-
-  /* Panduan Google Drive */
-  .guide-box {
-    margin: 14px 16px 0;
-    background: var(--warm-white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-  }
-  .guide-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--rose); margin-bottom: 6px; }
-  .guide-steps { font-size: 12px; color: var(--muted); line-height: 1.8; }
-  .guide-steps b { color: var(--charcoal); }
-
-  /* Grid katalog */
-  .katalog-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 14px 16px;
-  }
-
-  .katalog-card {
-    background: var(--warm-white);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .katalog-img {
-    width: 100%; aspect-ratio: 4/3;
-    object-fit: cover;
-    background: linear-gradient(135deg, var(--blush), var(--cream));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 30px;
-    color: var(--muted);
-  }
+  .katalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px; }
+  .katalog-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .katalog-img { width: 100%; aspect-ratio: 4/3; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; }
   .katalog-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .katalog-info { padding: 10px 12px; }
-  .katalog-nama { font-size: 13px; font-weight: 500; color: var(--charcoal); }
+  .katalog-nama { font-size: 13px; font-weight: 500; }
   .katalog-harga { font-size: 12px; color: var(--rose); font-weight: 500; margin-top: 2px; }
   .katalog-ket { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
-  .katalog-actions {
-    padding: 8px 12px;
-    border-top: 1px solid var(--border);
-    display: flex; gap: 6px; justify-content: flex-end;
-  }
-  .action-btn {
-    padding: 5px 12px; border-radius: 6px;
-    font-size: 12px; font-family: 'DM Sans', sans-serif;
-    cursor: pointer; border: 1.5px solid var(--border);
-    background: transparent; color: var(--charcoal); transition: all 0.15s;
-  }
+  .katalog-actions { padding: 8px 12px; border-top: 1px solid var(--border); display: flex; gap: 6px; justify-content: flex-end; }
+  .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--charcoal); transition: all 0.15s; }
   .action-btn.edit { border-color: var(--rose); color: var(--rose); }
   .action-btn.edit:hover { background: var(--rose); color: white; }
-  .action-btn.delete { border-color: var(--danger); color: var(--danger); }
-  .action-btn.delete:hover { background: var(--danger); color: white; }
-
+  .action-btn.del { border-color: var(--danger); color: var(--danger); }
+  .action-btn.del:hover { background: var(--danger); color: white; }
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
-
-  /* Modal */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5); z-index: 999;
-    align-items: flex-end; justify-content: center;
-  }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: flex-end; justify-content: center; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--warm-white); width: 100%; max-width: 480px;
-    max-height: 92vh; border-radius: 20px 20px 0 0;
-    overflow-y: auto; padding: 20px 18px 40px;
-  }
-  .modal-title {
-    font-family: 'Cormorant Garamond', serif; font-size: 20px;
-    font-style: italic; margin-bottom: 18px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  .modal { background: var(--warm-white); width: 100%; max-width: 480px; max-height: 92vh; border-radius: 20px 20px 0 0; overflow-y: auto; padding: 20px 18px 40px; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
   .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); }
-  .field-group { margin-bottom: 14px; }
-  .field-group label {
-    display: block; font-size: 11px; font-weight: 500;
-    letter-spacing: 0.07em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 5px;
-  }
-  .field-group input, .field-group textarea, .field-group select {
-    width: 100%; padding: 10px 12px;
-    border: 1.5px solid var(--border); border-radius: 8px;
-    font-family: 'DM Sans', sans-serif; font-size: 13px;
-    color: var(--charcoal); background: var(--cream); outline: none;
-    -webkit-appearance: none;
-  }
-  .field-group input:focus, .field-group textarea:focus { border-color: var(--rose); }
-  .field-group textarea { resize: vertical; min-height: 70px; }
-  .field-group .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-  /* Upload foto */
-  .upload-area {
-    width: 100%; aspect-ratio: 4/3;
-    border: 2px dashed var(--border);
-    border-radius: 10px; overflow: hidden;
-    background: var(--cream);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 8px; cursor: pointer;
-    transition: border-color 0.2s;
-    margin-bottom: 10px; position: relative;
-  }
+  .fg { margin-bottom: 14px; }
+  .fg label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .fg input, .fg textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
+  .fg input:focus, .fg textarea:focus { border-color: var(--rose); }
+  .fg textarea { resize: vertical; min-height: 70px; }
+  .fg .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .upload-area { width: 100%; aspect-ratio: 4/3; border: 2px dashed var(--border); border-radius: 10px; overflow: hidden; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: border-color 0.2s; margin-bottom: 10px; position: relative; }
   .upload-area:hover { border-color: var(--rose); }
   .upload-area.has-img { border-style: solid; border-color: var(--rose); }
   .upload-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
   .upload-area input[type="file"] { display: none; }
   .upload-icon { font-size: 28px; position: relative; z-index: 1; }
   .upload-text { font-size: 12px; color: var(--muted); position: relative; z-index: 1; text-align: center; }
-  .upload-overlay {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.45);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.2s; z-index: 2;
-  }
+  .upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 2; }
   .upload-area.has-img:hover .upload-overlay { opacity: 1; }
   .upload-overlay span { color: white; font-size: 12px; font-weight: 500; }
-  .upload-progress {
-    width: 100%; height: 3px; background: var(--border);
-    border-radius: 2px; margin-bottom: 10px; display: none;
-  }
-  .upload-progress-bar {
-    height: 100%; background: var(--rose);
-    border-radius: 2px; width: 0%;
-    transition: width 0.3s;
-  }
-
+  .upload-progress { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 10px; display: none; }
+  .upload-progress-bar { height: 100%; background: var(--rose); border-radius: 2px; width: 0%; transition: width 0.3s; }
   .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
-  .btn-save {
-    flex: 1; padding: 13px; background: var(--rose); color: white;
-    border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500; cursor: pointer;
-  }
-  .btn-cancel {
-    padding: 13px 20px; background: var(--cream);
-    border: 1.5px solid var(--border); border-radius: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px;
-    cursor: pointer; color: var(--muted);
-  }
-
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--charcoal); color: var(--cream);
-    padding: 12px 24px; border-radius: 30px;
-    font-size: 13px; font-weight: 500; z-index: 9999;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    opacity: 0; white-space: nowrap; pointer-events: none;
-  }
+  .btn-save { flex: 1; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .btn-cancel { padding: 13px 20px; background: var(--cream); border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; color: var(--muted); }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: var(--cream); padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 500; z-index: 9999; transition: transform 0.3s, opacity 0.3s; opacity: 0; white-space: nowrap; pointer-events: none; }
   .toast.success { border-left: 4px solid var(--sage); }
   .toast.error { border-left: 4px solid var(--danger); }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -238,23 +99,19 @@
   <button class="btn-add" onclick="openModal()">+ Tambah Model</button>
 </div>
 
-<!-- Grid -->
 <div id="katalogGrid" class="katalog-grid">
   <div class="empty" style="grid-column:1/-1">Memuat katalog...</div>
 </div>
 
-<!-- Modal Tambah/Edit -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-title">
       <span id="modalTitle">Tambah Model</span>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-
     <input type="hidden" id="editRowIndex">
     <input type="hidden" id="savedFotoUrl">
 
-    <!-- Upload area -->
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
       <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
       <span class="upload-icon">📷</span>
@@ -265,25 +122,22 @@
       <div class="upload-progress-bar" id="uploadProgressBar"></div>
     </div>
 
-    <div class="field-group">
+    <div class="fg">
       <label>Nama Model <span style="color:var(--rose)">*</span></label>
       <input type="text" id="inputNama" placeholder="Contoh: Romantic Garden">
     </div>
-
-    <div class="field-group">
-      <label>Harga (Rp) <span style="color:var(--rose)">*</span></label>
+    <div class="fg">
+      <label>Harga (Rp)</label>
       <input type="number" id="inputHarga" placeholder="Contoh: 2500000">
-      <div class="helper">Isi angka saja tanpa titik/koma</div>
+      <div class="helper">Kosongkan jika harga custom</div>
     </div>
-
-    <div class="field-group">
+    <div class="fg">
       <label>Keterangan</label>
-      <textarea id="inputKet" placeholder="Deskripsi singkat model ini..."></textarea>
+      <textarea id="inputKet" placeholder="Deskripsi singkat..."></textarea>
     </div>
-
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Batal</button>
-      <button class="btn-save" onclick="saveModel()">Simpan</button>
+      <button class="btn-save" id="btnSave" onclick="saveModel()">Simpan</button>
     </div>
   </div>
 </div>
@@ -305,104 +159,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function saveUrl() {
   const val = document.getElementById('urlInput').value.trim();
-  if (!val) return alert('URL tidak boleh kosong');
+  if (!val) return;
   APPS_SCRIPT_URL = val;
   localStorage.setItem(STORAGE_KEY, val);
   document.getElementById('setupBanner').style.display = 'none';
   loadKatalog();
 }
 
-// ============================================================
-// Load Katalog (JSONP)
-// ============================================================
 function loadKatalog() {
-  const callbackName = 'katalogCallback_' + Date.now();
-  const script = document.createElement('script');
-
-  const timeout = setTimeout(() => {
-    document.getElementById('katalogGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat katalog.</div>`;
-    delete window[callbackName];
-    document.body.removeChild(script);
+  const cb = 'kCb_' + Date.now();
+  const s = document.createElement('script');
+  const t = setTimeout(() => {
+    document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat.</div>';
+    delete window[cb];
+    if (s.parentNode) document.body.removeChild(s);
   }, 10000);
-
-  window[callbackName] = function(json) {
-    clearTimeout(timeout);
-    delete window[callbackName];
-    document.body.removeChild(script);
+  window[cb] = function(json) {
+    clearTimeout(t);
+    delete window[cb];
+    document.body.removeChild(s);
     katalogData = json.data || [];
     renderKatalog();
   };
-
-  script.src = `${APPS_SCRIPT_URL}?action=getKatalog&callback=${callbackName}&t=${Date.now()}`;
-  document.body.appendChild(script);
+  s.src = APPS_SCRIPT_URL + '?action=getKatalog&callback=' + cb + '&t=' + Date.now();
+  document.body.appendChild(s);
 }
 
-// ============================================================
-// Render
-// ============================================================
 function renderKatalog() {
   const grid = document.getElementById('katalogGrid');
   if (!katalogData.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">🌸 Belum ada model dekorasi.<br>Tap <b>+ Tambah Model</b> untuk mulai.</div>`;
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">🌸 Belum ada model.<br>Tap <b>+ Tambah Model</b> untuk mulai.</div>';
     return;
   }
-  grid.innerHTML = katalogData.map(d => {
-    const imgUrl = convertDriveUrl(d.foto);
-    const hargaFormatted = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') : 'Harga custom';
-    return `
-    <div class="katalog-card">
-      <div class="katalog-img">
-        ${imgUrl ? `<img src="${imgUrl}" alt="${d.nama}" onerror="this.parentElement.innerHTML='🌸'">` : '🌸'}
-      </div>
-      <div class="katalog-info">
-        <div class="katalog-nama">${d.nama || '—'}</div>
-        <div class="katalog-harga">${hargaFormatted}</div>
-        ${d.keterangan ? `<div class="katalog-ket">${d.keterangan}</div>` : ''}
-      </div>
-      <div class="katalog-actions">
-        <button class="action-btn edit" onclick="openEdit(${d.rowIndex})">✏️ Edit</button>
-        <button class="action-btn delete" onclick="hapusModel(${d.rowIndex}, '${(d.nama||'').replace(/'/g,"\\'")}')">🗑️</button>
-      </div>
-    </div>`;
+  grid.innerHTML = katalogData.map(function(d) {
+    var imgUrl = convertDriveUrl(d.foto);
+    var harga = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') : 'Harga custom';
+    var nama = (d.nama || '').replace(/'/g, "\\'");
+    return '<div class="katalog-card">' +
+      '<div class="katalog-img">' + (imgUrl ? '<img src="' + imgUrl + '" onerror="this.parentElement.innerHTML=\'🌸\'">' : '🌸') + '</div>' +
+      '<div class="katalog-info">' +
+        '<div class="katalog-nama">' + (d.nama || '—') + '</div>' +
+        '<div class="katalog-harga">' + harga + '</div>' +
+        (d.keterangan ? '<div class="katalog-ket">' + d.keterangan + '</div>' : '') +
+      '</div>' +
+      '<div class="katalog-actions">' +
+        '<button class="action-btn edit" onclick="openEdit(' + d.rowIndex + ')">✏️ Edit</button>' +
+        '<button class="action-btn del" onclick="hapusModel(' + d.rowIndex + ',\'' + nama + '\')">🗑️</button>' +
+      '</div>' +
+    '</div>';
   }).join('');
 }
 
 function convertDriveUrl(url) {
   if (!url) return '';
-  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
+  var match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w400';
   return url;
 }
 
-// ============================================================
-// File Upload Handler
-// ============================================================
 function handleFileSelect(event) {
-  const file = event.target.files[0];
+  var file = event.target.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    showToast('Ukuran foto max 5MB', 'error');
-    return;
-  }
-
+  if (file.size > 5 * 1024 * 1024) { showToast('Max 5MB', 'error'); return; }
   selectedFileMime = file.type;
-  const reader = new FileReader();
+  var reader = new FileReader();
   reader.onload = function(e) {
-    selectedFileBase64 = e.target.result.split(',')[1]; // ambil base64 saja
-    const uploadArea = document.getElementById('uploadArea');
-    uploadArea.classList.add('has-img');
-    uploadArea.innerHTML = `
-      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
-      <img src="${e.target.result}" alt="preview">
-      <div class="upload-overlay"><span>📷 Ganti foto</span></div>
-    `;
+    selectedFileBase64 = e.target.result.split(',')[1];
+    var area = document.getElementById('uploadArea');
+    area.classList.add('has-img');
+    area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
+      '<img src="' + e.target.result + '" alt="preview">' +
+      '<div class="upload-overlay"><span>📷 Ganti foto</span></div>';
   };
   reader.readAsDataURL(file);
 }
 
-// ============================================================
-// Modal
-// ============================================================
 function openModal() {
   isEditing = false;
   selectedFileBase64 = null;
@@ -418,7 +249,7 @@ function openModal() {
 }
 
 function openEdit(rowIndex) {
-  const d = katalogData.find(x => x.rowIndex === rowIndex);
+  var d = katalogData.find(function(x) { return x.rowIndex === rowIndex; });
   if (!d) return;
   isEditing = true;
   selectedFileBase64 = null;
@@ -429,17 +260,13 @@ function openEdit(rowIndex) {
   document.getElementById('inputNama').value = d.nama || '';
   document.getElementById('inputHarga').value = d.harga || '';
   document.getElementById('inputKet').value = d.keterangan || '';
-
-  // Tampilkan foto yang sudah ada
-  const imgUrl = convertDriveUrl(d.foto);
-  const uploadArea = document.getElementById('uploadArea');
+  var imgUrl = convertDriveUrl(d.foto);
+  var area = document.getElementById('uploadArea');
   if (imgUrl) {
-    uploadArea.classList.add('has-img');
-    uploadArea.innerHTML = `
-      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
-      <img src="${imgUrl}" alt="preview" onerror="this.style.display='none'">
-      <div class="upload-overlay"><span>📷 Ganti foto</span></div>
-    `;
+    area.classList.add('has-img');
+    area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
+      '<img src="' + imgUrl + '" onerror="this.style.display=\'none\'">' +
+      '<div class="upload-overlay"><span>📷 Ganti foto</span></div>';
   } else {
     resetUploadArea();
   }
@@ -447,115 +274,73 @@ function openEdit(rowIndex) {
 }
 
 function resetUploadArea() {
-  const uploadArea = document.getElementById('uploadArea');
-  uploadArea.classList.remove('has-img');
-  uploadArea.innerHTML = `
-    <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
-    <span class="upload-icon">📷</span>
-    <div class="upload-text">Tap untuk pilih foto<br><small>dari HP atau PC</small></div>
-    <div class="upload-overlay"><span>Ganti foto</span></div>
-  `;
+  var area = document.getElementById('uploadArea');
+  area.classList.remove('has-img');
+  area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
+    '<span class="upload-icon">📷</span>' +
+    '<div class="upload-text">Tap untuk pilih foto<br><small>dari HP atau PC</small></div>' +
+    '<div class="upload-overlay"><span>Ganti foto</span></div>';
 }
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
 }
 
-// ============================================================
-// Save — upload foto dulu ke Drive, lalu simpan ke Sheets
-// ============================================================
 async function saveModel() {
-  const nama = document.getElementById('inputNama').value.trim();
-  const harga = document.getElementById('inputHarga').value.trim();
-  const existingFoto = document.getElementById('savedFotoUrl').value;
-
+  var nama = document.getElementById('inputNama').value.trim();
+  var harga = document.getElementById('inputHarga').value.trim();
+  var existingFoto = document.getElementById('savedFotoUrl').value;
   if (!nama) { showToast('Nama model wajib diisi', 'error'); return; }
   if (!selectedFileBase64 && !existingFoto) { showToast('Pilih foto terlebih dahulu', 'error'); return; }
 
-  const saveBtn = document.querySelector('.btn-save');
-  saveBtn.textContent = selectedFileBase64 ? 'Mengupload foto...' : 'Menyimpan...';
-  saveBtn.disabled = true;
+  var btn = document.getElementById('btnSave');
+  btn.disabled = true;
+  var fotoUrl = existingFoto;
 
-  let fotoUrl = existingFoto;
-
-  // Upload foto baru kalau ada
   if (selectedFileBase64) {
+    btn.textContent = 'Mengupload...';
+    showProgress(40);
     try {
-      showProgress(30);
-      const uploadPayload = {
-        action: 'uploadFoto',
-        fileBase64: selectedFileBase64,
-        mimeType: selectedFileMime,
-        fileName: `dekorasi_${Date.now()}`
-      };
-      showProgress(60);
       await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
+        method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(uploadPayload)
+        body: JSON.stringify({ action: 'uploadFoto', fileBase64: selectedFileBase64, mimeType: selectedFileMime, fileName: 'dekorasi_' + Date.now() })
       });
-      showProgress(100);
-      // Karena no-cors kita tidak bisa baca response,
-      // kita pakai JSONP untuk ambil URL foto yang baru diupload
+      showProgress(80);
       fotoUrl = await getLastUploadedUrl();
-    } catch (e) {
+      showProgress(100);
+    } catch(e) {
       showToast('✗ Gagal upload foto', 'error');
-      saveBtn.textContent = 'Simpan';
-      saveBtn.disabled = false;
-      hideProgress();
-      return;
+      btn.disabled = false; btn.textContent = 'Simpan'; hideProgress(); return;
     }
+    hideProgress();
   }
 
-  hideProgress();
-  saveBtn.textContent = 'Menyimpan...';
-
-  const rowIndex = document.getElementById('editRowIndex').value;
-  const payload = {
-    action: isEditing ? 'updateKatalog' : 'insertKatalog',
-    rowIndex: rowIndex ? Number(rowIndex) : null,
-    nama, harga, foto: fotoUrl,
-    keterangan: document.getElementById('inputKet').value,
-    aktif: 'Ya'
-  };
-
+  btn.textContent = 'Menyimpan...';
+  var rowIndex = document.getElementById('editRowIndex').value;
   try {
     await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
+      method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ action: isEditing ? 'updateKatalog' : 'insertKatalog', rowIndex: rowIndex ? Number(rowIndex) : null, nama: nama, harga: harga, foto: fotoUrl, keterangan: document.getElementById('inputKet').value, aktif: 'Ya' })
     });
     closeModal();
-    showToast(isEditing ? '✓ Model berhasil diperbarui' : '✓ Model berhasil ditambahkan');
-    setTimeout(() => loadKatalog(), 1200);
-  } catch (e) {
-    showToast('✗ Gagal menyimpan, coba lagi', 'error');
+    showToast(isEditing ? '✓ Model diperbarui' : '✓ Model ditambahkan');
+    setTimeout(function() { loadKatalog(); }, 1200);
+  } catch(e) {
+    showToast('✗ Gagal menyimpan', 'error');
   }
-
-  saveBtn.textContent = 'Simpan';
-  saveBtn.disabled = false;
+  btn.disabled = false; btn.textContent = 'Simpan';
 }
 
-// Ambil URL foto terakhir yang diupload via JSONP
 function getLastUploadedUrl() {
-  return new Promise((resolve) => {
-    const callbackName = 'uploadCb_' + Date.now();
-    const script = document.createElement('script');
-    const timeout = setTimeout(() => {
-      resolve('');
-      delete window[callbackName];
-      if (script.parentNode) document.body.removeChild(script);
-    }, 8000);
-    window[callbackName] = function(json) {
-      clearTimeout(timeout);
-      delete window[callbackName];
-      document.body.removeChild(script);
-      resolve(json.url || '');
-    };
-    script.src = `${APPS_SCRIPT_URL}?action=getLastUpload&callback=${callbackName}&t=${Date.now()}`;
-    document.body.appendChild(script);
+  return new Promise(function(resolve) {
+    var cb = 'uCb_' + Date.now();
+    var s = document.createElement('script');
+    var t = setTimeout(function() { resolve(''); delete window[cb]; if(s.parentNode) document.body.removeChild(s); }, 8000);
+    window[cb] = function(json) { clearTimeout(t); delete window[cb]; document.body.removeChild(s); resolve(json.url || ''); };
+    s.src = APPS_SCRIPT_URL + '?action=getLastUpload&callback=' + cb + '&t=' + Date.now();
+    document.body.appendChild(s);
   });
 }
 
@@ -564,238 +349,26 @@ function showProgress(pct) {
   document.getElementById('uploadProgressBar').style.width = pct + '%';
 }
 function hideProgress() {
-  setTimeout(() => {
-    document.getElementById('uploadProgress').style.display = 'none';
-    document.getElementById('uploadProgressBar').style.width = '0%';
-  }, 400);
+  setTimeout(function() { document.getElementById('uploadProgress').style.display = 'none'; document.getElementById('uploadProgressBar').style.width = '0%'; }, 400);
 }
 
 async function hapusModel(rowIndex, nama) {
-  if (!confirm(`Hapus model "${nama}"?`)) return;
+  if (!confirm('Hapus model "' + nama + '"?')) return;
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'deleteKatalog', rowIndex })
-    });
-    showToast('🗑️ Model berhasil dihapus');
-    setTimeout(() => loadKatalog(), 1000);
-  } catch (e) {
-    showToast('✗ Gagal menghapus', 'error');
-  }
+    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'deleteKatalog', rowIndex: rowIndex }) });
+    showToast('🗑️ Model dihapus');
+    setTimeout(function() { loadKatalog(); }, 1000);
+  } catch(e) { showToast('✗ Gagal menghapus', 'error'); }
 }
 
-function showToast(msg, type = 'success') {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.className = `toast ${type} show`;
-  setTimeout(() => { toast.className = 'toast'; }, 3000);
+function showToast(msg, type) {
+  type = type || 'success';
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(function() { t.className = 'toast'; }, 3000);
 }
 
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-</script>
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (APPS_SCRIPT_URL) {
-    document.getElementById('setupBanner').style.display = 'none';
-    loadKatalog();
-  }
-});
-
-function saveUrl() {
-  const val = document.getElementById('urlInput').value.trim();
-  if (!val) return alert('URL tidak boleh kosong');
-  APPS_SCRIPT_URL = val;
-  localStorage.setItem(STORAGE_KEY, val);
-  document.getElementById('setupBanner').style.display = 'none';
-  loadKatalog();
-}
-
-// ============================================================
-// Load Katalog (JSONP)
-// ============================================================
-function loadKatalog() {
-  const callbackName = 'katalogCallback_' + Date.now();
-  const script = document.createElement('script');
-
-  const timeout = setTimeout(() => {
-    document.getElementById('katalogGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat katalog.</div>`;
-    delete window[callbackName];
-    document.body.removeChild(script);
-  }, 10000);
-
-  window[callbackName] = function(json) {
-    clearTimeout(timeout);
-    delete window[callbackName];
-    document.body.removeChild(script);
-    katalogData = json.data || [];
-    renderKatalog();
-  };
-
-  script.src = `${APPS_SCRIPT_URL}?action=getKatalog&callback=${callbackName}&t=${Date.now()}`;
-  document.body.appendChild(script);
-}
-
-// ============================================================
-// Render
-// ============================================================
-function renderKatalog() {
-  const grid = document.getElementById('katalogGrid');
-  if (!katalogData.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">🌸 Belum ada model dekorasi.<br>Tap <b>+ Tambah Model</b> untuk mulai.</div>`;
-    return;
-  }
-
-  grid.innerHTML = katalogData.map(d => {
-    const imgUrl = convertDriveUrl(d.foto);
-    const hargaFormatted = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') : 'Harga custom';
-    return `
-    <div class="katalog-card">
-      <div class="katalog-img">
-        ${imgUrl
-          ? `<img src="${imgUrl}" alt="${d.nama}" onerror="this.parentElement.innerHTML='🌸'">`
-          : '🌸'
-        }
-      </div>
-      <div class="katalog-info">
-        <div class="katalog-nama">${d.nama || '—'}</div>
-        <div class="katalog-harga">${hargaFormatted}</div>
-        ${d.keterangan ? `<div class="katalog-ket">${d.keterangan}</div>` : ''}
-      </div>
-      <div class="katalog-actions">
-        <button class="action-btn edit" onclick="openEdit(${d.rowIndex})">✏️ Edit</button>
-        <button class="action-btn delete" onclick="hapusModel(${d.rowIndex}, '${(d.nama||'').replace(/'/g,"\\'")}')">🗑️</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ============================================================
-// Konversi link Google Drive → direct image URL
-// ============================================================
-function convertDriveUrl(url) {
-  if (!url) return '';
-  // Format: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
-  // Kalau sudah format lain, return apa adanya
-  return url;
-}
-
-// ============================================================
-// Preview foto di modal
-// ============================================================
-function previewFoto() {
-  const url = document.getElementById('inputFoto').value;
-  const converted = convertDriveUrl(url);
-  const preview = document.getElementById('fotoPreview');
-  if (converted) {
-    preview.innerHTML = `<img src="${converted}" alt="preview" onerror="this.parentElement.innerHTML='<span>Foto tidak bisa dimuat. Pastikan link sudah diset public.</span>'">`;
-  } else {
-    preview.innerHTML = '<span>Preview foto akan muncul di sini</span>';
-  }
-}
-
-// ============================================================
-// Modal
-// ============================================================
-function openModal() {
-  isEditing = false;
-  document.getElementById('modalTitle').textContent = 'Tambah Model';
-  document.getElementById('editRowIndex').value = '';
-  document.getElementById('inputFoto').value = '';
-  document.getElementById('inputNama').value = '';
-  document.getElementById('inputHarga').value = '';
-  document.getElementById('inputKet').value = '';
-  document.getElementById('fotoPreview').innerHTML = '<span>Preview foto akan muncul di sini</span>';
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function openEdit(rowIndex) {
-  const d = katalogData.find(x => x.rowIndex === rowIndex);
-  if (!d) return;
-  isEditing = true;
-  document.getElementById('modalTitle').textContent = 'Edit Model';
-  document.getElementById('editRowIndex').value = rowIndex;
-  document.getElementById('inputFoto').value = d.foto || '';
-  document.getElementById('inputNama').value = d.nama || '';
-  document.getElementById('inputHarga').value = d.harga || '';
-  document.getElementById('inputKet').value = d.keterangan || '';
-  previewFoto();
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-// ============================================================
-// Save
-// ============================================================
-async function saveModel() {
-  const nama = document.getElementById('inputNama').value.trim();
-  const harga = document.getElementById('inputHarga').value.trim();
-  const foto = document.getElementById('inputFoto').value.trim();
-
-  if (!nama || !foto) {
-    showToast('Nama dan foto wajib diisi', 'error');
-    return;
-  }
-
-  const rowIndex = document.getElementById('editRowIndex').value;
-  const payload = {
-    action: isEditing ? 'updateKatalog' : 'insertKatalog',
-    rowIndex: rowIndex ? Number(rowIndex) : null,
-    nama, harga, foto,
-    keterangan: document.getElementById('inputKet').value,
-    aktif: 'Ya'
-  };
-
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    closeModal();
-    showToast(isEditing ? '✓ Model berhasil diperbarui' : '✓ Model berhasil ditambahkan');
-    setTimeout(() => loadKatalog(), 1000);
-  } catch (e) {
-    showToast('✗ Gagal menyimpan, coba lagi', 'error');
-  }
-}
-
-async function hapusModel(rowIndex, nama) {
-  if (!confirm(`Hapus model "${nama}"?`)) return;
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'deleteKatalog', rowIndex })
-    });
-    showToast('🗑️ Model berhasil dihapus');
-    setTimeout(() => loadKatalog(), 1000);
-  } catch (e) {
-    showToast('✗ Gagal menghapus', 'error');
-  }
-}
-
-// ============================================================
-// Toast
-// ============================================================
-function showToast(msg, type = 'success') {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.className = `toast ${type} show`;
-  setTimeout(() => { toast.className = 'toast'; }, 3000);
-}
-
-// Close modal on overlay click
 document.getElementById('modalOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
