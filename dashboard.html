@@ -578,6 +578,27 @@ function renderStats() {
 }
 
 // ============================================================
+// Helper: Format Tanggal
+// ============================================================
+function formatTanggal(str) {
+  if (!str) return '—';
+  // Coba berbagai format: YYYY-MM-DD, DD/MM/YYYY, dll
+  let d;
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+    // Format ISO: 2025-03-15 atau 2025-03-15T...
+    d = new Date(str.substring(0, 10) + 'T00:00:00');
+  } else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
+    // Format DD/MM/YYYY
+    const [day, month, year] = str.split('/');
+    d = new Date(`${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}T00:00:00`);
+  } else {
+    d = new Date(str);
+  }
+  if (isNaN(d)) return str; // kalau tetap gagal, tampilkan apa adanya
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ============================================================
 // Render Cards
 // ============================================================
 function renderCards(data) {
@@ -594,9 +615,8 @@ function renderCards(data) {
     const status = d.status || 'Baru';
     const statusClass = status.toLowerCase();
     const initial = (d.namaPemesan || '?').charAt(0).toUpperCase();
-    const tglFormatted = d.tanggal
-      ? new Date(d.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
-      : '—';
+    const tglFormatted = formatTanggal(d.tanggal);
+    const jamFormatted = d.jam ? d.jam.substring(0, 5) : '—';
     const waLink = `https://wa.me/${(d.noWA || '').replace(/[^0-9]/g,'').replace(/^0/, '62')}`;
 
     return `
@@ -613,7 +633,7 @@ function renderCards(data) {
       <div class="card-body">
         <div class="card-row">
           <div class="card-lbl">Tanggal & Jam</div>
-          <div class="card-val">${tglFormatted}, ${d.jam || '—'}</div>
+          <div class="card-val">${tglFormatted}, ${jamFormatted}</div>
         </div>
         <div class="card-row">
           <div class="card-lbl">Model</div>
@@ -731,7 +751,7 @@ async function saveEdit() {
     });
     closeModal();
     showToast('✓ Data berhasil diperbarui');
-    setTimeout(() => loadData(), 1500);
+    setTimeout(() => loadData(), 800);
   } catch (e) {
     showToast('✗ Gagal menyimpan, coba lagi', 'error');
   }
@@ -750,7 +770,7 @@ async function deleteRow(rowIndex, nama) {
       body: JSON.stringify({ action: 'delete', rowIndex })
     });
     showToast('🗑️ Data berhasil dihapus');
-    setTimeout(() => loadData(), 1500);
+    setTimeout(() => loadData(), 800);
   } catch (e) {
     showToast('✗ Gagal menghapus, coba lagi', 'error');
   }
