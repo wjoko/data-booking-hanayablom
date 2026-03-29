@@ -704,25 +704,13 @@
 // ============================================================
 // CONFIG — ganti dengan URL Apps Script kamu
 // ============================================================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdNo6J45OHxZm65_uidaip-UvkJ2TPfDSWBEmAs-k0nyJ12kiuiwUgOWkIniftaJlK/exec';
-const WA_NUMBER = '628999478692'; // ganti nomor WA Hanaya Blom
-
-// ============================================================
-// Data Model Dekorasi (placeholder — isi dengan data asli)
-// Tambah/kurangi sesuai katalog kamu
-// ============================================================
-const MODELS = [
-  { id: 'M01', name: 'Romantic Garden', price: 2500000, img: null, emoji: '🌷' },
-  { id: 'M02', name: 'Rustic Bohemian', price: 2800000, img: null, emoji: '🌿' },
-  { id: 'M03', name: 'Modern Minimalist', price: 3000000, img: null, emoji: '✨' },
-  { id: 'M04', name: 'Classic Elegant', price: 3500000, img: null, emoji: '👑' },
-  { id: 'M05', name: 'Tropical Bloom', price: 2700000, img: null, emoji: '🌺' },
-  { id: 'M06', name: 'Custom Request', price: null, img: null, emoji: '🎨' },
-];
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+const WA_NUMBER = '6281234567890'; // ganti nomor WA Hanaya Blom
 
 // ============================================================
 // State
 // ============================================================
+let MODELS = [];
 let selectedModel = null;
 let currentStep = 1;
 
@@ -730,9 +718,8 @@ let currentStep = 1;
 // Init
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  renderModels();
+  loadKatalog();
 
-  // Pill labels fix — the nested label trick
   document.querySelectorAll('.radio-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       const input = pill.querySelector('input');
@@ -740,14 +727,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Toggle nama fields saat acara dipilih
   document.querySelectorAll('input[name="acara"]').forEach(radio => {
     radio.addEventListener('change', toggleNamaFields);
   });
-
-  // Tulisan nama diisi manual oleh customer — tidak ada auto-fill
-  // namaSingle: tidak auto-fill, customer isi sendiri
 });
+
+// ============================================================
+// Load Katalog dari Sheets (JSONP)
+// ============================================================
+function loadKatalog() {
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">Memuat model dekorasi...</div>`;
+
+  const callbackName = 'formKatalogCb_' + Date.now();
+  const script = document.createElement('script');
+
+  const timeout = setTimeout(() => {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">⚠️ Gagal memuat model. Coba refresh halaman.</div>`;
+    delete window[callbackName];
+    document.body.removeChild(script);
+  }, 10000);
+
+  window[callbackName] = function(json) {
+    clearTimeout(timeout);
+    delete window[callbackName];
+    document.body.removeChild(script);
+    MODELS = (json.data || []).map(d => ({
+      id: d.id,
+      name: d.nama,
+      price: d.harga ? Number(d.harga) : null,
+      img: convertDriveUrl(d.foto),
+      keterangan: d.keterangan,
+    }));
+    renderModels();
+  };
+
+  script.src = `${APPS_SCRIPT_URL}?action=getKatalog&callback=${callbackName}&t=${Date.now()}`;
+  document.body.appendChild(script);
+}
+
+function convertDriveUrl(url) {
+  if (!url) return '';
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
+  return url;
+}
 
 function toggleNamaFields() {
   const acara = document.querySelector('input[name="acara"]:checked')?.value || '';
@@ -760,11 +784,15 @@ function toggleNamaFields() {
 
 function renderModels() {
   const grid = document.getElementById('modelGrid');
+  if (!MODELS.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">🌸 Belum ada model tersedia saat ini.</div>`;
+    return;
+  }
   grid.innerHTML = MODELS.map(m => `
     <div class="model-card" id="mc-${m.id}" onclick="selectModel('${m.id}')">
       ${m.img
-        ? `<img class="model-img" src="${m.img}" alt="${m.name}">`
-        : `<div class="model-img-placeholder"><span>${m.emoji}</span><small>Foto segera hadir</small></div>`
+        ? `<img class="model-img" src="${m.img}" alt="${m.name}" onerror="this.outerHTML='<div class=\\'model-img-placeholder\\'><span>🌸</span></div>'">`
+        : `<div class="model-img-placeholder"><span>🌸</span><small>Foto segera hadir</small></div>`
       }
       <div class="model-info">
         <div class="model-name">${m.name}</div>
