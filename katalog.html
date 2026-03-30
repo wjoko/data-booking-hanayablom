@@ -30,6 +30,17 @@
   .toolbar-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; }
   .btn-add { background: var(--rose); color: white; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .btn-add:hover { background: var(--rose-deep); }
+  .btn-setting { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); padding: 7px 10px; border-radius: 6px; font-size: 15px; cursor: pointer; line-height: 1; }
+  .settings-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .settings-overlay.open { display: flex; }
+  .settings-box { background: var(--warm-white); border-radius: 16px; padding: 24px 20px; width: 100%; max-width: 420px; }
+  .settings-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .settings-box h3 button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+  .settings-box label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .settings-box input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
+  .settings-box input:focus { border-color: var(--rose); }
+  .settings-url-info { font-size: 11px; color: var(--muted); margin-top: 5px; word-break: break-all; }
+  .btn-save-settings { width: 100%; margin-top: 16px; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
   .katalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px; }
   .katalog-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .katalog-img { width: 100%; aspect-ratio: 4/3; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; }
@@ -86,12 +97,18 @@
     <span>Katalog Model</span>
     Hanaya Blom
   </div>
+  <button class="btn-setting" onclick="openSettings()" title="Settings">⚙️</button>
 </div>
 
-<div class="setup-banner" id="setupBanner">
-  ⚙️ URL Apps Script:
-  <input type="text" id="urlInput" placeholder="https://script.google.com/macros/s/...">
-  <button onclick="saveUrl()">Simpan</button>
+<!-- Settings Modal -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-box">
+    <h3>Pengaturan <button onclick="closeSettings()">✕</button></h3>
+    <label>URL Apps Script</label>
+    <input type="text" id="urlInput" placeholder="https://script.google.com/macros/s/...">
+    <div class="settings-url-info" id="urlInfo"></div>
+    <button class="btn-save-settings" onclick="saveUrl()">Simpan & Muat Ulang</button>
+  </div>
 </div>
 
 <div class="toolbar">
@@ -152,17 +169,32 @@ let selectedFileMime = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   if (APPS_SCRIPT_URL) {
-    document.getElementById('setupBanner').style.display = 'none';
     loadKatalog();
+  } else {
+    openSettings();
+    document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">⚙️ Masukkan URL Apps Script dulu via tombol ⚙️ di pojok kanan atas.</div>';
   }
 });
 
+function openSettings() {
+  const input = document.getElementById('urlInput');
+  const info = document.getElementById('urlInfo');
+  input.value = APPS_SCRIPT_URL || '';
+  info.textContent = APPS_SCRIPT_URL ? '✓ URL tersimpan' : 'Belum ada URL tersimpan';
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.remove('open');
+}
+
 function saveUrl() {
-  const val = document.getElementById('urlInput').value.trim();
-  if (!val) return;
+  var val = document.getElementById('urlInput').value.trim();
+  if (!val) { showToast('URL tidak boleh kosong', 'error'); return; }
   APPS_SCRIPT_URL = val;
   localStorage.setItem(STORAGE_KEY, val);
-  document.getElementById('setupBanner').style.display = 'none';
+  closeSettings();
+  showToast('✓ URL tersimpan');
   loadKatalog();
 }
 
