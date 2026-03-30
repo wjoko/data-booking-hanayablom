@@ -56,6 +56,44 @@
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
   }
+  .btn-setting {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* Settings Modal */
+  .settings-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 1000;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .settings-modal-overlay.open { display: flex; }
+  .settings-modal {
+    background: var(--warm-white);
+    border-radius: 16px;
+    padding: 24px 20px;
+    width: 100%; max-width: 420px;
+  }
+  .settings-modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-style: italic;
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .settings-modal h3 button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+  .settings-modal label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .settings-modal input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
+  .settings-modal input:focus { border-color: var(--rose); }
+  .settings-url-display { font-size: 11px; color: var(--muted); margin-top: 5px; word-break: break-all; }
+  .settings-modal .btn-save-settings { width: 100%; margin-top: 16px; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .settings-modal .btn-save-settings:hover { background: var(--rose-deep); }
 
   /* Setup Banner */
   .setup-banner {
@@ -364,13 +402,21 @@
     Hanaya Blom
   </div>
   <button class="btn-refresh" onclick="loadData()">↻ Refresh</button>
+  <button class="btn-setting" onclick="openSettings()" title="Settings">⚙️</button>
 </div>
 
-<!-- Setup Banner -->
-<div class="setup-banner" id="setupBanner">
-  ⚙️ Masukkan URL Apps Script:
-  <input type="text" id="urlInput" placeholder="https://script.google.com/macros/s/...">
-  <button onclick="saveUrl()">Simpan</button>
+<!-- Settings Modal -->
+<div class="settings-modal-overlay" id="settingsOverlay">
+  <div class="settings-modal">
+    <h3>
+      Pengaturan
+      <button onclick="closeSettings()">✕</button>
+    </h3>
+    <label>URL Apps Script</label>
+    <input type="text" id="urlInput" placeholder="https://script.google.com/macros/s/...">
+    <div class="settings-url-display" id="currentUrlDisplay"></div>
+    <button class="btn-save-settings" onclick="saveUrl()">Simpan & Muat Ulang</button>
+  </div>
 </div>
 
 <!-- Stats -->
@@ -514,18 +560,32 @@ let editingRow = null;
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   if (APPS_SCRIPT_URL) {
-    document.getElementById('setupBanner').style.display = 'none';
-    document.getElementById('urlInput').value = APPS_SCRIPT_URL;
     loadData();
+  } else {
+    openSettings();
+    document.getElementById('cardsList').innerHTML = `<div class="empty">⚙️ Masukkan URL Apps Script dulu via tombol ⚙️ di pojok kanan atas.</div>`;
   }
 });
 
+function openSettings() {
+  const display = document.getElementById('currentUrlDisplay');
+  const input = document.getElementById('urlInput');
+  input.value = APPS_SCRIPT_URL || '';
+  display.textContent = APPS_SCRIPT_URL ? '✓ URL tersimpan: ' + APPS_SCRIPT_URL.substring(0, 60) + '...' : 'Belum ada URL tersimpan';
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.remove('open');
+}
+
 function saveUrl() {
   const val = document.getElementById('urlInput').value.trim();
-  if (!val) return alert('URL tidak boleh kosong');
+  if (!val) { showToast('URL tidak boleh kosong', 'error'); return; }
   APPS_SCRIPT_URL = val;
   localStorage.setItem(STORAGE_KEY, val);
-  document.getElementById('setupBanner').style.display = 'none';
+  closeSettings();
+  showToast('✓ URL tersimpan');
   loadData();
 }
 
