@@ -245,7 +245,7 @@ function renderKatalog() {
 function convertDriveUrl(url) {
   if (!url) return '';
   var match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (match) return 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w400';
+  if (match) return 'https://drive.google.com/uc?export=view&id=' + match[1];
   return url;
 }
 
