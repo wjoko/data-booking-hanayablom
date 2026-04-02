@@ -303,17 +303,18 @@
   }
 
   /* Lightbox */
-  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
   .lightbox.open { display: flex; }
-  .lightbox-img-wrap { max-width: 100%; max-height: 78vh; display: flex; align-items: center; justify-content: center; border-radius: 12px; overflow: hidden; }
-  .lightbox-img { max-width: 100%; max-height: 78vh; object-fit: contain; border-radius: 12px; transform: scale(1); transition: transform 0.3s ease; cursor: zoom-in; }
-  .lightbox-img.zoomed { transform: scale(2); cursor: zoom-out; }
-  .lightbox-info { margin-top: 14px; text-align: center; }
+  .lightbox-img-wrap { position: relative; width: 100%; flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; will-change: transform; cursor: grab; user-select: none; -webkit-user-drag: none; touch-action: none; }
+  .lightbox-img.dragging { cursor: grabbing; transition: none !important; }
+  .lightbox-footer { padding: 12px 20px 24px; text-align: center; flex-shrink: 0; }
   .lightbox-nama { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; color: white; }
   .lightbox-harga { font-size: 13px; color: var(--rose); margin-top: 4px; font-weight: 500; }
-  .lightbox-hint { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 6px; }
-  .lightbox-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .lightbox-select { margin-top: 14px; padding: 10px 28px; background: var(--rose); color: white; border: none; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .lightbox-hint { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+  .lightbox-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+  .lightbox-select { margin-top: 10px; padding: 10px 28px; background: var(--rose); color: white; border: none; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .lightbox-reset { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
   .model-img-wrap { position: relative; }
   .model-zoom-hint { position: absolute; bottom: 4px; right: 6px; background: rgba(0,0,0,0.4); color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
   .model-card:hover .model-zoom-hint { opacity: 1; }
@@ -473,17 +474,20 @@
 </div>
 
 <!-- Lightbox -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+<div class="lightbox" id="lightbox">
   <button class="lightbox-close" onclick="closeLightboxBtn()">✕</button>
-  <div class="lightbox-img-wrap">
-    <img class="lightbox-img" id="lightboxImg" src="" alt="" onclick="toggleZoom(event)">
+  <div class="lightbox-img-wrap" id="lightboxWrap">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
   </div>
-  <div class="lightbox-info">
+  <div class="lightbox-footer">
     <div class="lightbox-nama" id="lightboxNama"></div>
     <div class="lightbox-harga" id="lightboxHarga"></div>
-    <div class="lightbox-hint">Tap foto untuk zoom · Tap luar untuk tutup</div>
+    <div class="lightbox-hint">Pinch untuk zoom · Geser untuk pindah · Double tap reset</div>
+    <br>
+    <button class="lightbox-select" id="lightboxSelectBtn" onclick="selectFromLightbox()">✓ Pilih Model Ini</button>
+    <br>
+    <button class="lightbox-reset" onclick="resetTransform()">Reset zoom</button>
   </div>
-  <button class="lightbox-select" id="lightboxSelectBtn" onclick="selectFromLightbox()">✓ Pilih Model Ini</button>
 </div>
 
 <div id="mainForm">
@@ -735,7 +739,7 @@
 // CONFIG — ganti dengan URL Apps Script kamu
 // ============================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdNo6J45OHxZm65_uidaip-UvkJ2TPfDSWBEmAs-k0nyJ12kiuiwUgOWkIniftaJlK/exec';
-const WA_NUMBER = '628999478692'; // ganti nomor WA Hanaya Blom
+const WA_NUMBER = '628999478692';
 
 // ============================================================
 // State
@@ -844,45 +848,136 @@ function selectModel(id) {
 }
 
 // ============================================================
-// Lightbox
+// Lightbox — Pinch Zoom + Drag
 // ============================================================
 let lightboxModelId = null;
+let lbScale = 1, lbX = 0, lbY = 0;
+let lbDragging = false, lbLastX = 0, lbLastY = 0;
+let lbPinchDist = 0, lbPinchScale = 1;
+let lbLastTap = 0;
 
 function openLightbox(imgUrl, nama, harga, modelId) {
   lightboxModelId = modelId;
   const lb = document.getElementById('lightbox');
   const img = document.getElementById('lightboxImg');
   img.src = imgUrl;
-  img.classList.remove('zoomed');
   document.getElementById('lightboxNama').textContent = nama;
   document.getElementById('lightboxHarga').textContent = harga;
+  resetTransform();
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
+  initLightboxGestures();
 }
 
-function closeLightbox(e) {
-  if (e && e.target !== document.getElementById('lightbox')) return;
-  _doCloseLightbox();
+function resetTransform() {
+  lbScale = 1; lbX = 0; lbY = 0;
+  applyTransform(true);
 }
 
-function closeLightboxBtn() {
-  _doCloseLightbox();
+function applyTransform(animated) {
+  const img = document.getElementById('lightboxImg');
+  if (!img) return;
+  img.style.transition = animated ? 'transform 0.25s ease' : 'none';
+  img.style.transform = `translate(${lbX}px, ${lbY}px) scale(${lbScale})`;
 }
 
+function closeLightboxBtn() { _doCloseLightbox(); }
 function _doCloseLightbox() {
   document.getElementById('lightbox').classList.remove('open');
-  document.getElementById('lightboxImg').classList.remove('zoomed');
   document.body.style.overflow = '';
-}
-
-function toggleZoom(e) {
-  e.stopPropagation();
-  document.getElementById('lightboxImg').classList.toggle('zoomed');
+  resetTransform();
 }
 
 function selectFromLightbox() {
   if (lightboxModelId) selectModel(lightboxModelId);
   _doCloseLightbox();
+}
+
+function initLightboxGestures() {
+  const img = document.getElementById('lightboxImg');
+  const wrap = document.getElementById('lightboxWrap');
+
+  // Tap luar (wrap) untuk tutup
+  wrap.onclick = function(e) {
+    if (e.target === wrap && lbScale <= 1) _doCloseLightbox();
+  };
+
+  // ── MOUSE drag ──
+  img.onmousedown = function(e) {
+    if (lbScale <= 1) return;
+    lbDragging = true;
+    lbLastX = e.clientX; lbLastY = e.clientY;
+    img.classList.add('dragging');
+    e.preventDefault();
+  };
+  window.onmousemove = function(e) {
+    if (!lbDragging) return;
+    lbX += e.clientX - lbLastX;
+    lbY += e.clientY - lbLastY;
+    lbLastX = e.clientX; lbLastY = e.clientY;
+    applyTransform(false);
+  };
+  window.onmouseup = function() {
+    lbDragging = false;
+    img.classList.remove('dragging');
+  };
+
+  // Double click zoom
+  img.ondblclick = function(e) {
+    e.stopPropagation();
+    if (lbScale > 1) { resetTransform(); }
+    else { lbScale = 2.5; applyTransform(true); }
+  };
+
+  // ── TOUCH events ──
+  img.ontouchstart = function(e) {
+    if (e.touches.length === 1) {
+      // Double tap
+      const now = Date.now();
+      if (now - lbLastTap < 300) {
+        if (lbScale > 1) resetTransform();
+        else { lbScale = 2.5; applyTransform(true); }
+        lbLastTap = 0; return;
+      }
+      lbLastTap = now;
+      // Drag start
+      lbLastX = e.touches[0].clientX;
+      lbLastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      // Pinch start
+      lbPinchDist = getTouchDist(e.touches);
+      lbPinchScale = lbScale;
+    }
+    e.preventDefault();
+  };
+
+  img.ontouchmove = function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && lbScale > 1) {
+      // Drag
+      lbX += e.touches[0].clientX - lbLastX;
+      lbY += e.touches[0].clientY - lbLastY;
+      lbLastX = e.touches[0].clientX;
+      lbLastY = e.touches[0].clientY;
+      applyTransform(false);
+    } else if (e.touches.length === 2) {
+      // Pinch zoom
+      const dist = getTouchDist(e.touches);
+      lbScale = Math.min(5, Math.max(1, lbPinchScale * (dist / lbPinchDist)));
+      if (lbScale <= 1) { lbX = 0; lbY = 0; }
+      applyTransform(false);
+    }
+  };
+
+  img.ontouchend = function(e) {
+    if (lbScale < 1.05) resetTransform();
+  };
+}
+
+function getTouchDist(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
 // ============================================================
