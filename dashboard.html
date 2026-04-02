@@ -192,21 +192,18 @@
     padding: 12px 14px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
   }
 
   .booking-card {
     background: var(--warm-white);
-    border: 1px solid var(--border);
+    border: 2.5px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
     transition: box-shadow 0.2s;
   }
-  .booking-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-  .booking-card.card-alt { background: #EDE6DE; }
-  .booking-card.card-alt .card-top { background: #EDE6DE; }
-  .booking-card.card-alt .card-body { background: #EDE6DE; }
-  .booking-card.card-alt .card-actions { background: #EDE6DE; }
+  .booking-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: var(--rose); }
+  .booking-card.card-alt { background: var(--warm-white); border-color: #C8B9AA; }
 
   /* Thumbnail model di card */
   .card-thumb {
