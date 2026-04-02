@@ -773,19 +773,15 @@ function loadKatalog() {
   const grid = document.getElementById('modelGrid');
   grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">Memuat model dekorasi...</div>`;
 
-  const callbackName = 'formKatalogCb_' + Date.now();
+  const callbackName = 'fkCb' + Date.now();
   const script = document.createElement('script');
-
-  const timeout = setTimeout(() => {
+  script.onerror = function() {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">⚠️ Gagal memuat model. Coba refresh halaman.</div>`;
-    delete window[callbackName];
-    document.body.removeChild(script);
-  }, 10000);
+  };
 
+  // Assign DULU sebelum append script
   window[callbackName] = function(json) {
-    clearTimeout(timeout);
     delete window[callbackName];
-    document.body.removeChild(script);
     MODELS = (json.data || []).map(d => ({
       id: d.id,
       name: d.nama,
@@ -796,7 +792,20 @@ function loadKatalog() {
     renderModels();
   };
 
-  script.src = `${APPS_SCRIPT_URL}?action=getKatalog&callback=${callbackName}&t=${Date.now()}`;
+  const timeout = setTimeout(() => {
+    delete window[callbackName];
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">⚠️ Gagal memuat model. Coba refresh halaman.</div>`;
+    if (script.parentNode) document.body.removeChild(script);
+  }, 12000);
+
+  const origCb = window[callbackName];
+  window[callbackName] = function(json) {
+    clearTimeout(timeout);
+    if (script.parentNode) document.body.removeChild(script);
+    origCb(json);
+  };
+
+  script.src = APPS_SCRIPT_URL + '?action=getKatalog&callback=' + callbackName + '&t=' + Date.now();
   document.body.appendChild(script);
 }
 
