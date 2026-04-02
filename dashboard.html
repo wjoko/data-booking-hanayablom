@@ -596,25 +596,31 @@ async function loadData() {
   if (!APPS_SCRIPT_URL) return;
   showLoading();
 
-  const callbackName = 'hanayaCallback_' + Date.now();
-  const script = document.createElement('script');
+  var cb = 'hCb' + Date.now();
+  var script = document.createElement('script');
 
-  const timeout = setTimeout(() => {
-    document.getElementById('cardsList').innerHTML = `<div class="empty">⚠️ Gagal memuat data.<br><small>Pastikan URL Apps Script sudah benar.</small></div>`;
-    delete window[callbackName];
-    document.body.removeChild(script);
-  }, 10000);
-
-  window[callbackName] = function(json) {
-    clearTimeout(timeout);
-    delete window[callbackName];
-    document.body.removeChild(script);
+  window[cb] = function(json) {
+    clearTimeout(timer);
+    window[cb] = null;
+    if (script.parentNode) document.body.removeChild(script);
     allData = json.data || [];
     renderStats();
     renderCards(allData);
   };
 
-  script.src = `${APPS_SCRIPT_URL}?action=getAll&callback=${callbackName}&t=${Date.now()}`;
+  var timer = setTimeout(function() {
+    window[cb] = null;
+    if (script.parentNode) document.body.removeChild(script);
+    document.getElementById('cardsList').innerHTML = '<div class="empty">⚠️ Gagal memuat data.<br><small>Pastikan URL Apps Script sudah benar.</small></div>';
+  }, 12000);
+
+  script.onerror = function() {
+    clearTimeout(timer);
+    window[cb] = null;
+    document.getElementById('cardsList').innerHTML = '<div class="empty">⚠️ Gagal memuat data.</div>';
+  };
+
+  script.src = APPS_SCRIPT_URL + '?action=getAll&callback=' + cb + '&t=' + Date.now();
   document.body.appendChild(script);
 }
 
