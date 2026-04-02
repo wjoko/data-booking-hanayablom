@@ -229,20 +229,43 @@ function saveUrl() {
 }
 
 function loadKatalog() {
-  const cb = 'kCb_' + Date.now();
-  const s = document.createElement('script');
-  const t = setTimeout(() => {
-    document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat.</div>';
-    delete window[cb];
-    if (s.parentNode) document.body.removeChild(s);
-  }, 10000);
+  document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Memuat katalog...</div>';
+  _doLoadKatalog(0);
+}
+
+function _doLoadKatalog(attempt) {
+  var cb = 'kCb' + Date.now();
+  var s = document.createElement('script');
+
+  // Assign callback DULU sebelum append
   window[cb] = function(json) {
-    clearTimeout(t);
-    delete window[cb];
-    document.body.removeChild(s);
+    clearTimeout(timer);
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
     katalogData = json.data || [];
     renderKatalog();
   };
+
+  var timer = setTimeout(function() {
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
+    if (attempt < 2) {
+      // Retry sampai 2x
+      _doLoadKatalog(attempt + 1);
+    } else {
+      document.getElementById('katalogGrid').innerHTML =
+        '<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat.<br><small>Cek koneksi lalu tap Refresh.</small><br><br>' +
+        '<button onclick="loadKatalog()" style="padding:8px 20px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">↻ Refresh</button></div>';
+    }
+  }, 12000);
+
+  s.onerror = function() {
+    clearTimeout(timer);
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
+    if (attempt < 2) _doLoadKatalog(attempt + 1);
+  };
+
   s.src = APPS_SCRIPT_URL + '?action=getKatalog&callback=' + cb + '&t=' + Date.now();
   document.body.appendChild(s);
 }
