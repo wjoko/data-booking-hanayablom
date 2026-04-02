@@ -203,6 +203,10 @@
     transition: box-shadow 0.2s;
   }
   .booking-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+  .booking-card.card-alt { background: #EDE6DE; }
+  .booking-card.card-alt .card-top { background: #EDE6DE; }
+  .booking-card.card-alt .card-body { background: #EDE6DE; }
+  .booking-card.card-alt .card-actions { background: #EDE6DE; }
 
   /* Thumbnail model di card */
   .card-thumb {
@@ -723,9 +727,10 @@ function renderCards(data) {
     const jamFormatted = d.jam ? d.jam.substring(0, 5) : '—';
     const waLink = `https://wa.me/${(d.noWA || '').replace(/[^0-9]/g,'').replace(/^0/, '62')}`;
     const fotoUrl = d.modelFoto ? convertDriveUrl(d.modelFoto) : '';
+    const altClass = i % 2 === 0 ? '' : 'card-alt';
 
     return `
-    <div class="booking-card" id="card-${d.rowIndex}">
+    <div class="booking-card ${altClass}" id="card-${d.rowIndex}">
       ${fotoUrl ? `
       <div class="card-thumb">
         <img src="${fotoUrl}" alt="${d.modelNama || ''}" onerror="this.parentElement.style.display='none'">
