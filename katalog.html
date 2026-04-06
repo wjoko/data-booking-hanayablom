@@ -41,6 +41,11 @@
   .settings-box input:focus { border-color: var(--rose); }
   .settings-url-info { font-size: 11px; color: var(--muted); margin-top: 5px; word-break: break-all; }
   .btn-save-settings { width: 100%; margin-top: 16px; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+  /* Tabs */
+  .tabs { display: flex; background: var(--warm-white); border-bottom: 1px solid var(--border); }
+  .tab-btn { flex: 1; padding: 12px 8px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; background: none; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+  .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
+
   .katalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px; }
   .katalog-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .katalog-img { width: 100%; aspect-ratio: 4/3; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; }
@@ -56,6 +61,11 @@
   .action-btn.del { border-color: var(--danger); color: var(--danger); }
   .action-btn.del:hover { background: var(--danger); color: white; }
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
+
+  /* Tabs */
+  .tabs { display: flex; background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 16px; gap: 4px; }
+  .tab-btn { padding: 12px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; background: none; border: none; border-bottom: 2.5px solid transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; margin-bottom: -1px; }
+  .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
 
   /* Lightbox */
   .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
@@ -141,13 +151,29 @@
   </div>
 </div>
 
-<div class="toolbar">
-  <div class="toolbar-title">Model Dekorasi</div>
-  <button class="btn-add" onclick="openModal()">+ Tambah Model</button>
+<div class="tabs">
+  <button class="tab-btn active" id="tabDekorasi" onclick="switchTab('dekorasi')">🌸 Model Dekorasi</button>
+  <button class="tab-btn" id="tabSewa" onclick="switchTab('sewa')">🪑 Item Sewa</button>
 </div>
 
-<div id="katalogGrid" class="katalog-grid">
-  <div class="empty" style="grid-column:1/-1">Memuat katalog...</div>
+<div id="sectionDekorasi">
+  <div class="toolbar">
+    <div class="toolbar-title">Model Dekorasi</div>
+    <button class="btn-add" onclick="openModal('dekorasi')">+ Tambah Model</button>
+  </div>
+  <div id="katalogGrid" class="katalog-grid">
+    <div class="empty" style="grid-column:1/-1">Memuat katalog...</div>
+  </div>
+</div>
+
+<div id="sectionSewa" style="display:none">
+  <div class="toolbar">
+    <div class="toolbar-title">Item Sewa</div>
+    <button class="btn-add" onclick="openModal('sewa')">+ Tambah Item</button>
+  </div>
+  <div id="sewaGrid" class="katalog-grid">
+    <div class="empty" style="grid-column:1/-1">Memuat item sewa...</div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -170,13 +196,13 @@
     </div>
 
     <div class="fg">
-      <label>Nama Model <span style="color:var(--rose)">*</span></label>
+      <label id="labelNama">Nama Model <span style="color:var(--rose)">*</span></label>
       <input type="text" id="inputNama" placeholder="Contoh: Romantic Garden">
     </div>
     <div class="fg">
-      <label>Harga (Rp)</label>
+      <label id="labelHarga">Harga (Rp)</label>
       <input type="number" id="inputHarga" placeholder="Contoh: 2500000">
-      <div class="helper">Kosongkan jika harga custom</div>
+      <div class="helper" id="helperHarga">Kosongkan jika harga custom</div>
     </div>
     <div class="fg">
       <label>Keterangan</label>
@@ -193,18 +219,32 @@
 const STORAGE_KEY = 'hanayablom_admin_url';
 let APPS_SCRIPT_URL = localStorage.getItem(STORAGE_KEY) || '';
 let katalogData = [];
+let sewaData = [];
 let isEditing = false;
+let currentTab = 'dekorasi'; // 'dekorasi' atau 'sewa'
 let selectedFileBase64 = null;
 let selectedFileMime = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   if (APPS_SCRIPT_URL) {
     loadKatalog();
+    loadSewa();
   } else {
     openSettings();
     document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">⚙️ Masukkan URL Apps Script dulu via tombol ⚙️ di pojok kanan atas.</div>';
   }
 });
+
+// ============================================================
+// Tab switching
+// ============================================================
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('sectionDekorasi').style.display = tab === 'dekorasi' ? '' : 'none';
+  document.getElementById('sectionSewa').style.display = tab === 'sewa' ? '' : 'none';
+  document.getElementById('tabDekorasi').classList.toggle('active', tab === 'dekorasi');
+  document.getElementById('tabSewa').classList.toggle('active', tab === 'sewa');
+}
 
 function openSettings() {
   const input = document.getElementById('urlInput');
@@ -305,6 +345,67 @@ function convertDriveUrl(url) {
   return url;
 }
 
+// ============================================================
+// Load & Render Sewa
+// ============================================================
+function loadSewa() {
+  document.getElementById('sewaGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Memuat item sewa...</div>';
+  _doLoadSewa(0);
+}
+
+function _doLoadSewa(attempt) {
+  var cb = 'sCb' + Date.now();
+  var s = document.createElement('script');
+  window[cb] = function(json) {
+    clearTimeout(timer);
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
+    sewaData = json.data || [];
+    renderSewa();
+  };
+  var timer = setTimeout(function() {
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
+    if (attempt < 2) { _doLoadSewa(attempt + 1); }
+    else {
+      document.getElementById('sewaGrid').innerHTML =
+        '<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat.<br><br>' +
+        '<button onclick="loadSewa()" style="padding:8px 20px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">↻ Refresh</button></div>';
+    }
+  }, 12000);
+  s.onerror = function() { clearTimeout(timer); window[cb] = null; if(s.parentNode) document.body.removeChild(s); if(attempt < 2) _doLoadSewa(attempt+1); };
+  s.src = APPS_SCRIPT_URL + '?action=getSewa&callback=' + cb + '&t=' + Date.now();
+  document.body.appendChild(s);
+}
+
+function renderSewa() {
+  var grid = document.getElementById('sewaGrid');
+  if (!sewaData.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">🪑 Belum ada item sewa.<br>Tap <b>+ Tambah Item</b> untuk mulai.</div>';
+    return;
+  }
+  grid.innerHTML = sewaData.map(function(d) {
+    var imgUrl = convertDriveUrl(d.foto);
+    var harga = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') + '/acara' : 'Harga custom';
+    var nama = (d.nama || '').replace(/'/g, "\\'");
+    var hargaEsc = harga.replace(/'/g, "\\'");
+    return '<div class="katalog-card">' +
+      '<div class="katalog-img" onclick="openLightbox(\'' + imgUrl + '\',\'' + nama + '\',\'' + hargaEsc + '\')">' +
+        (imgUrl ? '<img src="' + imgUrl + '" onerror="this.parentElement.innerHTML=\'🪑\'">' : '🪑') +
+      '</div>' +
+      '<div class="katalog-info">' +
+        '<div class="katalog-nama">' + (d.nama || '—') + '</div>' +
+        '<div class="katalog-harga">' + harga + '</div>' +
+        (d.keterangan ? '<div class="katalog-ket">' + d.keterangan + '</div>' : '') +
+      '</div>' +
+      '<div class="katalog-actions">' +
+        '<button class="action-btn edit" onclick="openEditSewa(' + d.rowIndex + ')">✏️ Edit</button>' +
+        '<button class="action-btn del" onclick="hapusSewa(' + d.rowIndex + ',\'' + nama + '\')">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
 function handleFileSelect(event) {
   var file = event.target.files[0];
   if (!file) return;
@@ -322,11 +423,17 @@ function handleFileSelect(event) {
   reader.readAsDataURL(file);
 }
 
-function openModal() {
+function openModal(tab) {
+  if (tab) currentTab = tab;
   isEditing = false;
   selectedFileBase64 = null;
   selectedFileMime = null;
-  document.getElementById('modalTitle').textContent = 'Tambah Model';
+  var isSewa = currentTab === 'sewa';
+  document.getElementById('modalTitle').textContent = isSewa ? 'Tambah Item Sewa' : 'Tambah Model';
+  document.getElementById('labelNama').innerHTML = (isSewa ? 'Nama Item' : 'Nama Model') + ' <span style="color:var(--rose)">*</span>';
+  document.getElementById('labelHarga').textContent = isSewa ? 'Harga Sewa (Rp)' : 'Harga (Rp)';
+  document.getElementById('helperHarga').textContent = isSewa ? 'Harga per acara' : 'Kosongkan jika harga custom';
+  document.getElementById('inputNama').placeholder = isSewa ? 'Contoh: Kursi Tiffany' : 'Contoh: Romantic Garden';
   document.getElementById('editRowIndex').value = '';
   document.getElementById('savedFotoUrl').value = '';
   document.getElementById('inputNama').value = '';
@@ -339,26 +446,50 @@ function openModal() {
 function openEdit(rowIndex) {
   var d = katalogData.find(function(x) { return x.rowIndex === rowIndex; });
   if (!d) return;
+  currentTab = 'dekorasi';
   isEditing = true;
-  selectedFileBase64 = null;
-  selectedFileMime = null;
+  selectedFileBase64 = null; selectedFileMime = null;
   document.getElementById('modalTitle').textContent = 'Edit Model';
+  document.getElementById('labelNama').innerHTML = 'Nama Model <span style="color:var(--rose)">*</span>';
+  document.getElementById('labelHarga').textContent = 'Harga (Rp)';
+  document.getElementById('helperHarga').textContent = 'Kosongkan jika harga custom';
   document.getElementById('editRowIndex').value = rowIndex;
   document.getElementById('savedFotoUrl').value = d.foto || '';
   document.getElementById('inputNama').value = d.nama || '';
   document.getElementById('inputHarga').value = d.harga || '';
   document.getElementById('inputKet').value = d.keterangan || '';
-  var imgUrl = convertDriveUrl(d.foto);
+  _setUploadPreview(d.foto);
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openEditSewa(rowIndex) {
+  var d = sewaData.find(function(x) { return x.rowIndex === rowIndex; });
+  if (!d) return;
+  currentTab = 'sewa';
+  isEditing = true;
+  selectedFileBase64 = null; selectedFileMime = null;
+  document.getElementById('modalTitle').textContent = 'Edit Item Sewa';
+  document.getElementById('labelNama').innerHTML = 'Nama Item <span style="color:var(--rose)">*</span>';
+  document.getElementById('labelHarga').textContent = 'Harga Sewa (Rp)';
+  document.getElementById('helperHarga').textContent = 'Harga per acara';
+  document.getElementById('editRowIndex').value = rowIndex;
+  document.getElementById('savedFotoUrl').value = d.foto || '';
+  document.getElementById('inputNama').value = d.nama || '';
+  document.getElementById('inputHarga').value = d.harga || '';
+  document.getElementById('inputKet').value = d.keterangan || '';
+  _setUploadPreview(d.foto);
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function _setUploadPreview(foto) {
+  var imgUrl = convertDriveUrl(foto);
   var area = document.getElementById('uploadArea');
   if (imgUrl) {
     area.classList.add('has-img');
     area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
       '<img src="' + imgUrl + '" onerror="this.style.display=\'none\'">' +
       '<div class="upload-overlay"><span>📷 Ganti foto</span></div>';
-  } else {
-    resetUploadArea();
-  }
-  document.getElementById('modalOverlay').classList.add('open');
+  } else { resetUploadArea(); }
 }
 
 function resetUploadArea() {
@@ -378,7 +509,8 @@ async function saveModel() {
   var nama = document.getElementById('inputNama').value.trim();
   var harga = document.getElementById('inputHarga').value.trim();
   var existingFoto = document.getElementById('savedFotoUrl').value;
-  if (!nama) { showToast('Nama model wajib diisi', 'error'); return; }
+  var isSewa = currentTab === 'sewa';
+  if (!nama) { showToast('Nama wajib diisi', 'error'); return; }
   if (!selectedFileBase64 && !existingFoto) { showToast('Pilih foto terlebih dahulu', 'error'); return; }
 
   var btn = document.getElementById('btnSave');
