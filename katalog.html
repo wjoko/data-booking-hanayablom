@@ -3,205 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katalog Model — Hanaya Blom</title>
+<title>Katalog — Hanaya Blom</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #F7F3EE;
-    --warm-white: #FDFAF7;
-    --blush: #E8D5C4;
-    --rose: #C4956A;
-    --rose-deep: #A67452;
-    --sage: #8A9E8C;
-    --charcoal: #2C2C2C;
-    --muted: #8A8278;
-    --border: #DDD5CB;
-    --danger: #C0392B;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; padding-bottom: 60px; }
-  .header { background: var(--charcoal); padding: 16px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 200; }
-  .header-brand { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: var(--cream); flex: 1; }
-  .header-brand span { color: var(--rose); font-style: normal; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; display: block; font-family: 'DM Sans', sans-serif; }
-  .setup-banner { background: #FFF3CD; border-bottom: 1px solid #F0D060; padding: 10px 16px; font-size: 12px; color: #7D5A00; display: flex; align-items: center; gap: 8px; }
-  .setup-banner input { flex: 1; padding: 6px 10px; border: 1px solid #F0D060; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; background: white; }
-  .setup-banner button { padding: 6px 14px; background: var(--rose); color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-  .toolbar { padding: 14px 16px; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .toolbar-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; }
-  .btn-add { background: var(--rose); color: white; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; }
-  .btn-add:hover { background: var(--rose-deep); }
-  .btn-setting { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); padding: 7px 10px; border-radius: 6px; font-size: 15px; cursor: pointer; line-height: 1; }
-  .settings-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-  .settings-overlay.open { display: flex; }
-  .settings-box { background: var(--warm-white); border-radius: 16px; padding: 24px 20px; width: 100%; max-width: 420px; }
-  .settings-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-  .settings-box h3 button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
-  .settings-box label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .settings-box input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
-  .settings-box input:focus { border-color: var(--rose); }
-  .settings-url-info { font-size: 11px; color: var(--muted); margin-top: 5px; word-break: break-all; }
-  .btn-save-settings { width: 100%; margin-top: 16px; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
-  /* Tabs */
-  .tabs { display: flex; background: var(--warm-white); border-bottom: 1px solid var(--border); }
-  .tab-btn { flex: 1; padding: 12px 8px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; background: none; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; }
-  .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
+:root {
+  --cream: #F7F3EE; --warm-white: #FDFAF7; --blush: #E8D5C4;
+  --rose: #C4956A; --rose-deep: #A67452; --sage: #8A9E8C;
+  --charcoal: #2C2C2C; --muted: #8A8278; --border: #DDD5CB; --danger: #C0392B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; padding-bottom: 60px; }
 
-  .katalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px; }
-  .katalog-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .katalog-img { width: 100%; aspect-ratio: 4/3; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; }
-  .katalog-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .katalog-info { padding: 10px 12px; }
-  .katalog-nama { font-size: 13px; font-weight: 500; }
-  .katalog-harga { font-size: 12px; color: var(--rose); font-weight: 500; margin-top: 2px; }
-  .katalog-ket { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
-  .katalog-actions { padding: 8px 12px; border-top: 1px solid var(--border); display: flex; gap: 6px; justify-content: flex-end; }
-  .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--charcoal); transition: all 0.15s; }
-  .action-btn.edit { border-color: var(--rose); color: var(--rose); }
-  .action-btn.edit:hover { background: var(--rose); color: white; }
-  .action-btn.del { border-color: var(--danger); color: var(--danger); }
-  .action-btn.del:hover { background: var(--danger); color: white; }
-  .empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; }
+/* Header */
+.header { background: var(--charcoal); padding: 16px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 200; }
+.header-brand { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: var(--cream); flex: 1; }
+.header-brand span { color: var(--rose); font-style: normal; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; display: block; font-family: 'DM Sans', sans-serif; }
+.btn-setting { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); padding: 7px 10px; border-radius: 6px; font-size: 15px; cursor: pointer; }
 
-  /* Tabs */
-  .tabs { display: flex; background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 16px; gap: 4px; }
-  .tab-btn { padding: 12px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; background: none; border: none; border-bottom: 2.5px solid transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; margin-bottom: -1px; }
-  .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
+/* Tabs */
+.tabs { display: flex; background: var(--warm-white); border-bottom: 2px solid var(--border); padding: 0 16px; }
+.tab-btn { padding: 13px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; background: none; border: none; border-bottom: 3px solid transparent; color: var(--muted); cursor: pointer; margin-bottom: -2px; transition: all 0.2s; }
+.tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); }
 
-  /* Lightbox */
-  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
-  .lightbox.open { display: flex; }
-  .lightbox-img-wrap { position: relative; width: 100%; flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; will-change: transform; cursor: grab; user-select: none; -webkit-user-drag: none; touch-action: none; }
-  .lightbox-img.dragging { cursor: grabbing; transition: none !important; }
-  .lightbox-footer { padding: 12px 20px 24px; text-align: center; flex-shrink: 0; }
-  .lightbox-nama { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; color: white; }
-  .lightbox-harga { font-size: 13px; color: var(--rose); margin-top: 4px; font-weight: 500; }
-  .lightbox-hint { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; }
-  .lightbox-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
-  .lightbox-reset { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
-  .katalog-img { cursor: pointer; }
-  .katalog-img:hover img { opacity: 0.9; }
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: flex-end; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--warm-white); width: 100%; max-width: 480px; max-height: 92vh; border-radius: 20px 20px 0 0; overflow-y: auto; padding: 20px 18px 40px; }
-  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
-  .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); }
-  .fg { margin-bottom: 14px; }
-  .fg label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
-  .fg input, .fg textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
-  .fg input:focus, .fg textarea:focus { border-color: var(--rose); }
-  .fg textarea { resize: vertical; min-height: 70px; }
-  .fg .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .upload-area { width: 100%; aspect-ratio: 4/3; border: 2px dashed var(--border); border-radius: 10px; overflow: hidden; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: border-color 0.2s; margin-bottom: 10px; position: relative; }
-  .upload-area:hover { border-color: var(--rose); }
-  .upload-area.has-img { border-style: solid; border-color: var(--rose); }
-  .upload-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-  .upload-area input[type="file"] { display: none; }
-  .upload-icon { font-size: 28px; position: relative; z-index: 1; }
-  .upload-text { font-size: 12px; color: var(--muted); position: relative; z-index: 1; text-align: center; }
-  .upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 2; }
-  .upload-area.has-img:hover .upload-overlay { opacity: 1; }
-  .upload-overlay span { color: white; font-size: 12px; font-weight: 500; }
-  .upload-progress { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 10px; display: none; }
-  .upload-progress-bar { height: 100%; background: var(--rose); border-radius: 2px; width: 0%; transition: width 0.3s; }
-  .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
-  .btn-save { flex: 1; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
-  .btn-cancel { padding: 13px 20px; background: var(--cream); border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; color: var(--muted); }
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: var(--cream); padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 500; z-index: 9999; transition: transform 0.3s, opacity 0.3s; opacity: 0; white-space: nowrap; pointer-events: none; }
-  .toast.success { border-left: 4px solid var(--sage); }
-  .toast.error { border-left: 4px solid var(--danger); }
-  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+/* Toolbar */
+.toolbar { padding: 12px 16px; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.toolbar-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; }
+.btn-add { background: var(--rose); color: white; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.btn-add:hover { background: var(--rose-deep); }
+
+/* Grid */
+.item-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px; }
+.item-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.item-img { width: 100%; aspect-ratio: 4/3; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; cursor: pointer; }
+.item-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.item-info { padding: 10px 12px; }
+.item-nama { font-size: 13px; font-weight: 500; }
+.item-harga { font-size: 12px; color: var(--rose); font-weight: 500; margin-top: 2px; }
+.item-ket { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+.item-actions { padding: 8px 12px; border-top: 1px solid var(--border); display: flex; gap: 6px; justify-content: flex-end; }
+.act-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--charcoal); transition: all 0.15s; }
+.act-btn.edit { border-color: var(--rose); color: var(--rose); }
+.act-btn.edit:hover { background: var(--rose); color: white; }
+.act-btn.del { border-color: var(--danger); color: var(--danger); }
+.act-btn.del:hover { background: var(--danger); color: white; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 13px; grid-column: 1/-1; }
+
+/* Lightbox */
+.lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.93); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
+.lightbox.open { display: flex; }
+.lb-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; z-index: 10; }
+.lb-wrap { position: relative; width: 100%; flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.lb-img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center; will-change: transform; cursor: grab; touch-action: none; user-select: none; }
+.lb-img.dragging { cursor: grabbing; }
+.lb-footer { padding: 12px 20px 20px; text-align: center; flex-shrink: 0; }
+.lb-nama { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; color: white; }
+.lb-harga { font-size: 13px; color: var(--rose); margin-top: 4px; font-weight: 500; }
+.lb-hint { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+.lb-reset { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
+
+/* Modal */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: flex-end; justify-content: center; }
+.modal-bg.open { display: flex; }
+.modal { background: var(--warm-white); width: 100%; max-width: 480px; max-height: 92vh; border-radius: 20px 20px 0 0; overflow-y: auto; padding: 20px 18px 40px; }
+.modal-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+.modal-close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); }
+.fg { margin-bottom: 14px; }
+.fg label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+.fg input, .fg textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
+.fg input:focus, .fg textarea:focus { border-color: var(--rose); }
+.fg textarea { resize: vertical; min-height: 70px; }
+.fg .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.upload-area { width: 100%; aspect-ratio: 4/3; border: 2px dashed var(--border); border-radius: 10px; overflow: hidden; background: var(--cream); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: border-color 0.2s; margin-bottom: 10px; position: relative; }
+.upload-area:hover { border-color: var(--rose); }
+.upload-area.has-img { border-style: solid; border-color: var(--rose); }
+.upload-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.upload-area input[type="file"] { display: none; }
+.upload-icon { font-size: 28px; position: relative; z-index: 1; }
+.upload-text { font-size: 12px; color: var(--muted); position: relative; z-index: 1; text-align: center; }
+.upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 2; }
+.upload-area.has-img:hover .upload-overlay { opacity: 1; }
+.upload-overlay span { color: white; font-size: 12px; font-weight: 500; }
+.progress-bar-wrap { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 10px; display: none; }
+.progress-bar-fill { height: 100%; background: var(--rose); border-radius: 2px; width: 0%; transition: width 0.3s; }
+.modal-actions { display: flex; gap: 8px; margin-top: 20px; }
+.btn-save { flex: 1; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+.btn-cancel { padding: 13px 20px; background: var(--cream); border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; color: var(--muted); }
+
+/* Settings */
+.settings-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+.settings-bg.open { display: flex; }
+.settings-box { background: var(--warm-white); border-radius: 16px; padding: 24px 20px; width: 100%; max-width: 420px; }
+.settings-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.settings-box h3 button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+.settings-box label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.settings-box input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--cream); outline: none; }
+.settings-box input:focus { border-color: var(--rose); }
+.settings-info { font-size: 11px; color: var(--muted); margin-top: 5px; word-break: break-all; }
+.btn-save-settings { width: 100%; margin-top: 16px; padding: 13px; background: var(--rose); color: white; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: var(--cream); padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 500; z-index: 9999; transition: transform 0.3s, opacity 0.3s; opacity: 0; white-space: nowrap; pointer-events: none; }
+.toast.success { border-left: 4px solid var(--sage); }
+.toast.error { border-left: 4px solid var(--danger); }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
 
 <div id="toast" class="toast"></div>
 
+<!-- Header -->
 <div class="header">
   <div class="header-brand">
-    <span>Katalog Model</span>
+    <span>Katalog Admin</span>
     Hanaya Blom
   </div>
-  <button class="btn-setting" onclick="openSettings()" title="Settings">⚙️</button>
+  <button class="btn-setting" onclick="openSettings()">⚙️</button>
 </div>
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <div class="lightbox-img-wrap" id="lightboxWrap">
-    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <button class="lb-close" onclick="lbClose()">✕</button>
+  <div class="lb-wrap" id="lbWrap">
+    <img class="lb-img" id="lbImg" src="" alt="">
   </div>
-  <div class="lightbox-footer">
-    <div class="lightbox-nama" id="lightboxNama"></div>
-    <div class="lightbox-harga" id="lightboxHarga"></div>
-    <div class="lightbox-hint">Pinch untuk zoom · Geser untuk pindah · Double tap reset</div>
+  <div class="lb-footer">
+    <div class="lb-nama" id="lbNama"></div>
+    <div class="lb-harga" id="lbHarga"></div>
+    <div class="lb-hint">Pinch zoom · Geser · Double tap reset</div>
     <br>
-    <button class="lightbox-reset" onclick="resetTransform()">Reset zoom</button>
+    <button class="lb-reset" onclick="lbResetTransform()">Reset zoom</button>
   </div>
 </div>
 
-<!-- Settings Modal -->
-<div class="settings-overlay" id="settingsOverlay">
+<!-- Settings -->
+<div class="settings-bg" id="settingsBg">
   <div class="settings-box">
     <h3>Pengaturan <button onclick="closeSettings()">✕</button></h3>
     <label>URL Apps Script</label>
     <input type="text" id="urlInput" placeholder="https://script.google.com/macros/s/...">
-    <div class="settings-url-info" id="urlInfo"></div>
+    <div class="settings-info" id="settingsInfo"></div>
     <button class="btn-save-settings" onclick="saveUrl()">Simpan & Muat Ulang</button>
   </div>
 </div>
 
+<!-- Tabs -->
 <div class="tabs">
   <button class="tab-btn active" id="tabDekorasi" onclick="switchTab('dekorasi')">🌸 Model Dekorasi</button>
   <button class="tab-btn" id="tabSewa" onclick="switchTab('sewa')">🪑 Item Sewa</button>
 </div>
 
+<!-- Section Dekorasi -->
 <div id="sectionDekorasi">
   <div class="toolbar">
     <div class="toolbar-title">Model Dekorasi</div>
-    <button class="btn-add" onclick="openModal('dekorasi')">+ Tambah Model</button>
+    <button class="btn-add" onclick="openAdd('dekorasi')">+ Tambah Model</button>
   </div>
-  <div id="katalogGrid" class="katalog-grid">
-    <div class="empty" style="grid-column:1/-1">Memuat katalog...</div>
+  <div id="gridDekorasi" class="item-grid">
+    <div class="empty-state">Memuat...</div>
   </div>
 </div>
 
+<!-- Section Sewa -->
 <div id="sectionSewa" style="display:none">
   <div class="toolbar">
     <div class="toolbar-title">Item Sewa</div>
-    <button class="btn-add" onclick="openModal('sewa')">+ Tambah Item</button>
+    <button class="btn-add" onclick="openAdd('sewa')">+ Tambah Item</button>
   </div>
-  <div id="sewaGrid" class="katalog-grid">
-    <div class="empty" style="grid-column:1/-1">Memuat item sewa...</div>
+  <div id="gridSewa" class="item-grid">
+    <div class="empty-state">Memuat...</div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay">
+<!-- Modal Tambah/Edit -->
+<div class="modal-bg" id="modalBg">
   <div class="modal">
-    <div class="modal-title">
-      <span id="modalTitle">Tambah Model</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-head">
+      <span id="modalTitle">Tambah</span>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
     </div>
-    <input type="hidden" id="editRowIndex">
-    <input type="hidden" id="savedFotoUrl">
+    <input type="hidden" id="modalType"> <!-- 'dekorasi' atau 'sewa' -->
+    <input type="hidden" id="modalRowIndex">
+    <input type="hidden" id="modalFotoUrl">
 
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-      <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
       <span class="upload-icon">📷</span>
       <div class="upload-text">Tap untuk pilih foto<br><small>dari HP atau PC</small></div>
       <div class="upload-overlay"><span>Ganti foto</span></div>
     </div>
-    <div class="upload-progress" id="uploadProgress">
-      <div class="upload-progress-bar" id="uploadProgressBar"></div>
+    <div class="progress-bar-wrap" id="progressWrap">
+      <div class="progress-bar-fill" id="progressFill"></div>
     </div>
 
     <div class="fg">
-      <label id="labelNama">Nama Model <span style="color:var(--rose)">*</span></label>
-      <input type="text" id="inputNama" placeholder="Contoh: Romantic Garden">
+      <label id="labelNama">Nama <span style="color:var(--rose)">*</span></label>
+      <input type="text" id="inputNama" placeholder="">
     </div>
     <div class="fg">
       <label id="labelHarga">Harga (Rp)</label>
-      <input type="number" id="inputHarga" placeholder="Contoh: 2500000">
+      <input type="number" id="inputHarga" placeholder="Contoh: 500000">
       <div class="helper" id="helperHarga">Kosongkan jika harga custom</div>
     </div>
     <div class="fg">
@@ -210,33 +211,61 @@
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Batal</button>
-      <button class="btn-save" id="btnSave" onclick="saveModel()">Simpan</button>
+      <button class="btn-save" id="btnSave" onclick="saveItem()">Simpan</button>
     </div>
   </div>
 </div>
 
 <script>
+// ============================================================
+// STATE
+// ============================================================
 const STORAGE_KEY = 'hanayablom_admin_url';
 let APPS_SCRIPT_URL = localStorage.getItem(STORAGE_KEY) || '';
-let katalogData = [];
+let dekorasiData = [];
 let sewaData = [];
+let fileBase64 = null;
+let fileMime = null;
 let isEditing = false;
-let currentTab = 'dekorasi'; // 'dekorasi' atau 'sewa'
-let selectedFileBase64 = null;
-let selectedFileMime = null;
+let currentTab = 'dekorasi';
 
-document.addEventListener('DOMContentLoaded', () => {
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
   if (APPS_SCRIPT_URL) {
-    loadKatalog();
+    loadDekorasi();
     loadSewa();
   } else {
     openSettings();
-    document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">⚙️ Masukkan URL Apps Script dulu via tombol ⚙️ di pojok kanan atas.</div>';
+    document.getElementById('gridDekorasi').innerHTML = '<div class="empty-state">⚙️ Masukkan URL Apps Script dulu.</div>';
   }
 });
 
 // ============================================================
-// Tab switching
+// SETTINGS
+// ============================================================
+function openSettings() {
+  document.getElementById('urlInput').value = APPS_SCRIPT_URL || '';
+  document.getElementById('settingsInfo').textContent = APPS_SCRIPT_URL ? '✓ URL tersimpan' : 'Belum ada URL';
+  document.getElementById('settingsBg').classList.add('open');
+}
+function closeSettings() {
+  document.getElementById('settingsBg').classList.remove('open');
+}
+function saveUrl() {
+  var val = document.getElementById('urlInput').value.trim();
+  if (!val) { showToast('URL tidak boleh kosong', 'error'); return; }
+  APPS_SCRIPT_URL = val;
+  localStorage.setItem(STORAGE_KEY, val);
+  closeSettings();
+  showToast('✓ URL tersimpan');
+  loadDekorasi();
+  loadSewa();
+}
+
+// ============================================================
+// TABS
 // ============================================================
 function switchTab(tab) {
   currentTab = tab;
@@ -246,289 +275,241 @@ function switchTab(tab) {
   document.getElementById('tabSewa').classList.toggle('active', tab === 'sewa');
 }
 
-function openSettings() {
-  const input = document.getElementById('urlInput');
-  const info = document.getElementById('urlInfo');
-  input.value = APPS_SCRIPT_URL || '';
-  info.textContent = APPS_SCRIPT_URL ? '✓ URL tersimpan' : 'Belum ada URL tersimpan';
-  document.getElementById('settingsOverlay').classList.add('open');
-}
-
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.remove('open');
-}
-
-function saveUrl() {
-  var val = document.getElementById('urlInput').value.trim();
-  if (!val) { showToast('URL tidak boleh kosong', 'error'); return; }
-  APPS_SCRIPT_URL = val;
-  localStorage.setItem(STORAGE_KEY, val);
-  closeSettings();
-  showToast('✓ URL tersimpan');
-  loadKatalog();
-  loadSewa();
-}
-
-function loadKatalog() {
-  document.getElementById('katalogGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Memuat katalog...</div>';
-  _doLoadKatalog(0);
-}
-
-function _doLoadKatalog(attempt) {
-  var cb = 'kCb' + Date.now();
+// ============================================================
+// LOAD DATA (JSONP)
+// ============================================================
+function jsonpLoad(action, onSuccess, onError) {
+  var cb = 'cb' + Date.now() + Math.floor(Math.random()*1000);
   var s = document.createElement('script');
-
-  // Assign callback DULU sebelum append
   window[cb] = function(json) {
     clearTimeout(timer);
     window[cb] = null;
     if (s.parentNode) document.body.removeChild(s);
-    katalogData = json.data || [];
-    renderKatalog();
+    onSuccess(json);
   };
-
   var timer = setTimeout(function() {
     window[cb] = null;
     if (s.parentNode) document.body.removeChild(s);
-    if (attempt < 2) {
-      // Retry sampai 2x
-      _doLoadKatalog(attempt + 1);
-    } else {
-      document.getElementById('katalogGrid').innerHTML =
-        '<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat.<br><small>Cek koneksi lalu tap Refresh.</small><br><br>' +
-        '<button onclick="loadKatalog()" style="padding:8px 20px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">↻ Refresh</button></div>';
-    }
+    if (onError) onError();
   }, 12000);
-
   s.onerror = function() {
     clearTimeout(timer);
     window[cb] = null;
     if (s.parentNode) document.body.removeChild(s);
-    if (attempt < 2) _doLoadKatalog(attempt + 1);
+    if (onError) onError();
   };
-
-  s.src = APPS_SCRIPT_URL + '?action=getKatalog&callback=' + cb + '&t=' + Date.now();
+  s.src = APPS_SCRIPT_URL + '?action=' + action + '&callback=' + cb + '&t=' + Date.now();
   document.body.appendChild(s);
 }
 
-function renderKatalog() {
-  const grid = document.getElementById('katalogGrid');
-  if (!katalogData.length) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">🌸 Belum ada model.<br>Tap <b>+ Tambah Model</b> untuk mulai.</div>';
-    return;
-  }
-  grid.innerHTML = katalogData.map(function(d) {
-    var imgUrl = convertDriveUrl(d.foto);
-    var harga = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') : 'Harga custom';
-    var nama = (d.nama || '').replace(/'/g, "\\'");
-    var hargaEsc = harga.replace(/'/g, "\\'");
-    return '<div class="katalog-card">' +
-      '<div class="katalog-img" onclick="openLightbox(\'' + imgUrl + '\',\'' + nama + '\',\'' + hargaEsc + '\')">' +
-        (imgUrl ? '<img src="' + imgUrl + '" onerror="this.parentElement.innerHTML=\'🌸\'">' : '🌸') +
-      '</div>' +
-      '<div class="katalog-info">' +
-        '<div class="katalog-nama">' + (d.nama || '—') + '</div>' +
-        '<div class="katalog-harga">' + harga + '</div>' +
-        (d.keterangan ? '<div class="katalog-ket">' + d.keterangan + '</div>' : '') +
-      '</div>' +
-      '<div class="katalog-actions">' +
-        '<button class="action-btn edit" onclick="openEdit(' + d.rowIndex + ')">✏️ Edit</button>' +
-        '<button class="action-btn del" onclick="hapusModel(' + d.rowIndex + ',\'' + nama + '\')">🗑️</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+function loadDekorasi() {
+  document.getElementById('gridDekorasi').innerHTML = '<div class="empty-state">Memuat model dekorasi...</div>';
+  jsonpLoad('getKatalog',
+    function(json) { dekorasiData = json.data || []; renderDekorasi(); },
+    function() { document.getElementById('gridDekorasi').innerHTML = '<div class="empty-state">⚠️ Gagal memuat.<br><br><button onclick="loadDekorasi()" style="padding:8px 20px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">↻ Refresh</button></div>'; }
+  );
 }
 
-function convertDriveUrl(url) {
-  if (!url) return '';
-  var match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (match) return 'https://lh3.googleusercontent.com/d/' + match[1];
-  return url;
-}
-
-// ============================================================
-// Load & Render Sewa
-// ============================================================
 function loadSewa() {
-  document.getElementById('sewaGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Memuat item sewa...</div>';
-  _doLoadSewa(0);
+  document.getElementById('gridSewa').innerHTML = '<div class="empty-state">Memuat item sewa...</div>';
+  jsonpLoad('getSewa',
+    function(json) { sewaData = json.data || []; renderSewa(); },
+    function() { document.getElementById('gridSewa').innerHTML = '<div class="empty-state">⚠️ Gagal memuat.<br><br><button onclick="loadSewa()" style="padding:8px 20px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">↻ Refresh</button></div>'; }
+  );
 }
 
-function _doLoadSewa(attempt) {
-  var cb = 'sCb' + Date.now();
-  var s = document.createElement('script');
-  window[cb] = function(json) {
-    clearTimeout(timer);
-    window[cb] = null;
-    if (s.parentNode) document.body.removeChild(s);
-    sewaData = json.data || [];
-    renderSewa();
-  };
-  var timer = setTimeout(function() {
-    window[cb] = null;
-    if (s.parentNode) document.body.removeChild(s);
-    if (attempt < 2) { _doLoadSewa(attempt + 1); }
-    else {
-      document.getElementById('sewaGrid').innerHTML =
-        '<div class="empty" style="grid-column:1/-1">⚠️ Gagal memuat.<br><br>' +
-        '<button onclick="loadSewa()" style="padding:8px 20px;background:var(--rose);color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">↻ Refresh</button></div>';
-    }
-  }, 12000);
-  s.onerror = function() { clearTimeout(timer); window[cb] = null; if(s.parentNode) document.body.removeChild(s); if(attempt < 2) _doLoadSewa(attempt+1); };
-  s.src = APPS_SCRIPT_URL + '?action=getSewa&callback=' + cb + '&t=' + Date.now();
-  document.body.appendChild(s);
+// ============================================================
+// RENDER
+// ============================================================
+function driveUrl(url) {
+  if (!url) return '';
+  var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? 'https://lh3.googleusercontent.com/d/' + m[1] : url;
+}
+
+function makeCard(d, type) {
+  var img = driveUrl(d.foto);
+  var harga = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') + (type === 'sewa' ? '/acara' : '') : 'Harga custom';
+  var namaEsc = (d.nama || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  var hargaEsc = harga.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  var editFn = type === 'dekorasi' ? 'openEdit' : 'openEditSewa';
+  var hapusFn = type === 'dekorasi' ? 'hapus' : 'hapusSewa';
+  return '<div class="item-card">' +
+    '<div class="item-img" onclick="lbOpen(\'' + img + '\',\'' + namaEsc + '\',\'' + hargaEsc + '\')">' +
+      (img ? '<img src="' + img + '" alt="' + (d.nama||'') + '" onerror="this.parentElement.innerHTML=\'🌸\'">' : (type === 'sewa' ? '🪑' : '🌸')) +
+    '</div>' +
+    '<div class="item-info">' +
+      '<div class="item-nama">' + (d.nama || '—') + '</div>' +
+      '<div class="item-harga">' + harga + '</div>' +
+      (d.keterangan ? '<div class="item-ket">' + d.keterangan + '</div>' : '') +
+    '</div>' +
+    '<div class="item-actions">' +
+      '<button class="act-btn edit" onclick="' + editFn + '(' + d.rowIndex + ')">✏️ Edit</button>' +
+      '<button class="act-btn del" onclick="' + hapusFn + '(' + d.rowIndex + ',\'' + namaEsc + '\')">🗑️</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderDekorasi() {
+  var grid = document.getElementById('gridDekorasi');
+  if (!dekorasiData.length) { grid.innerHTML = '<div class="empty-state">🌸 Belum ada model.<br>Tap <b>+ Tambah Model</b> untuk mulai.</div>'; return; }
+  grid.innerHTML = dekorasiData.map(function(d) { return makeCard(d, 'dekorasi'); }).join('');
 }
 
 function renderSewa() {
-  var grid = document.getElementById('sewaGrid');
-  if (!sewaData.length) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">🪑 Belum ada item sewa.<br>Tap <b>+ Tambah Item</b> untuk mulai.</div>';
-    return;
-  }
-  grid.innerHTML = sewaData.map(function(d) {
-    var imgUrl = convertDriveUrl(d.foto);
-    var harga = d.harga ? 'Rp ' + Number(d.harga).toLocaleString('id-ID') + '/acara' : 'Harga custom';
-    var nama = (d.nama || '').replace(/'/g, "\\'");
-    var hargaEsc = harga.replace(/'/g, "\\'");
-    return '<div class="katalog-card">' +
-      '<div class="katalog-img" onclick="openLightbox(\'' + imgUrl + '\',\'' + nama + '\',\'' + hargaEsc + '\')">' +
-        (imgUrl ? '<img src="' + imgUrl + '" onerror="this.parentElement.innerHTML=\'🪑\'">' : '🪑') +
-      '</div>' +
-      '<div class="katalog-info">' +
-        '<div class="katalog-nama">' + (d.nama || '—') + '</div>' +
-        '<div class="katalog-harga">' + harga + '</div>' +
-        (d.keterangan ? '<div class="katalog-ket">' + d.keterangan + '</div>' : '') +
-      '</div>' +
-      '<div class="katalog-actions">' +
-        '<button class="action-btn edit" onclick="openEditSewa(' + d.rowIndex + ')">✏️ Edit</button>' +
-        '<button class="action-btn del" onclick="hapusSewa(' + d.rowIndex + ',\'' + nama + '\')">🗑️</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  var grid = document.getElementById('gridSewa');
+  if (!sewaData.length) { grid.innerHTML = '<div class="empty-state">🪑 Belum ada item sewa.<br>Tap <b>+ Tambah Item</b> untuk mulai.</div>'; return; }
+  grid.innerHTML = sewaData.map(function(d) { return makeCard(d, 'sewa'); }).join('');
 }
 
-function handleFileSelect(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('Max 5MB', 'error'); return; }
-  selectedFileMime = file.type;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    selectedFileBase64 = e.target.result.split(',')[1];
-    var area = document.getElementById('uploadArea');
-    area.classList.add('has-img');
-    area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
-      '<img src="' + e.target.result + '" alt="preview">' +
-      '<div class="upload-overlay"><span>📷 Ganti foto</span></div>';
-  };
-  reader.readAsDataURL(file);
-}
-
-function openModal(tab) {
-  if (tab) currentTab = tab;
+// ============================================================
+// MODAL
+// ============================================================
+function openAdd(type) {
   isEditing = false;
-  selectedFileBase64 = null;
-  selectedFileMime = null;
-  var isSewa = currentTab === 'sewa';
-  document.getElementById('modalTitle').textContent = isSewa ? 'Tambah Item Sewa' : 'Tambah Model';
-  document.getElementById('labelNama').innerHTML = (isSewa ? 'Nama Item' : 'Nama Model') + ' <span style="color:var(--rose)">*</span>';
-  document.getElementById('labelHarga').textContent = isSewa ? 'Harga Sewa (Rp)' : 'Harga (Rp)';
-  document.getElementById('helperHarga').textContent = isSewa ? 'Harga per acara' : 'Kosongkan jika harga custom';
-  document.getElementById('inputNama').placeholder = isSewa ? 'Contoh: Kursi Tiffany' : 'Contoh: Romantic Garden';
-  document.getElementById('editRowIndex').value = '';
-  document.getElementById('savedFotoUrl').value = '';
+  fileBase64 = null; fileMime = null;
+  document.getElementById('modalType').value = type;
+  document.getElementById('modalRowIndex').value = '';
+  document.getElementById('modalFotoUrl').value = '';
   document.getElementById('inputNama').value = '';
   document.getElementById('inputHarga').value = '';
   document.getElementById('inputKet').value = '';
-  resetUploadArea();
-  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalTitle').textContent = type === 'sewa' ? 'Tambah Item Sewa' : 'Tambah Model Dekorasi';
+  document.getElementById('labelNama').innerHTML = (type === 'sewa' ? 'Nama Item' : 'Nama Model') + ' <span style="color:var(--rose)">*</span>';
+  document.getElementById('labelHarga').textContent = type === 'sewa' ? 'Harga Sewa (Rp)' : 'Harga (Rp)';
+  document.getElementById('helperHarga').textContent = type === 'sewa' ? 'Harga per acara' : 'Kosongkan jika harga custom';
+  document.getElementById('inputNama').placeholder = type === 'sewa' ? 'Contoh: Kursi Tiffany' : 'Contoh: Romantic Garden';
+  resetUpload();
+  document.getElementById('modalBg').classList.add('open');
 }
 
 function openEdit(rowIndex) {
-  var d = katalogData.find(function(x) { return x.rowIndex === rowIndex; });
+  var d = dekorasiData.find(function(x) { return x.rowIndex === rowIndex; });
   if (!d) return;
-  currentTab = 'dekorasi';
-  isEditing = true;
-  selectedFileBase64 = null; selectedFileMime = null;
-  document.getElementById('modalTitle').textContent = 'Edit Model';
-  document.getElementById('labelNama').innerHTML = 'Nama Model <span style="color:var(--rose)">*</span>';
-  document.getElementById('labelHarga').textContent = 'Harga (Rp)';
-  document.getElementById('helperHarga').textContent = 'Kosongkan jika harga custom';
-  document.getElementById('editRowIndex').value = rowIndex;
-  document.getElementById('savedFotoUrl').value = d.foto || '';
+  isEditing = true; fileBase64 = null; fileMime = null;
+  document.getElementById('modalType').value = 'dekorasi';
+  document.getElementById('modalRowIndex').value = rowIndex;
+  document.getElementById('modalFotoUrl').value = d.foto || '';
   document.getElementById('inputNama').value = d.nama || '';
   document.getElementById('inputHarga').value = d.harga || '';
   document.getElementById('inputKet').value = d.keterangan || '';
-  _setUploadPreview(d.foto);
-  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalTitle').textContent = 'Edit Model Dekorasi';
+  document.getElementById('labelNama').innerHTML = 'Nama Model <span style="color:var(--rose)">*</span>';
+  document.getElementById('labelHarga').textContent = 'Harga (Rp)';
+  document.getElementById('helperHarga').textContent = 'Kosongkan jika harga custom';
+  document.getElementById('inputNama').placeholder = 'Contoh: Romantic Garden';
+  setUploadPreview(d.foto);
+  document.getElementById('modalBg').classList.add('open');
 }
 
 function openEditSewa(rowIndex) {
   var d = sewaData.find(function(x) { return x.rowIndex === rowIndex; });
   if (!d) return;
-  currentTab = 'sewa';
-  isEditing = true;
-  selectedFileBase64 = null; selectedFileMime = null;
+  isEditing = true; fileBase64 = null; fileMime = null;
+  document.getElementById('modalType').value = 'sewa';
+  document.getElementById('modalRowIndex').value = rowIndex;
+  document.getElementById('modalFotoUrl').value = d.foto || '';
+  document.getElementById('inputNama').value = d.nama || '';
+  document.getElementById('inputHarga').value = d.harga || '';
+  document.getElementById('inputKet').value = d.keterangan || '';
   document.getElementById('modalTitle').textContent = 'Edit Item Sewa';
   document.getElementById('labelNama').innerHTML = 'Nama Item <span style="color:var(--rose)">*</span>';
   document.getElementById('labelHarga').textContent = 'Harga Sewa (Rp)';
   document.getElementById('helperHarga').textContent = 'Harga per acara';
-  document.getElementById('editRowIndex').value = rowIndex;
-  document.getElementById('savedFotoUrl').value = d.foto || '';
-  document.getElementById('inputNama').value = d.nama || '';
-  document.getElementById('inputHarga').value = d.harga || '';
-  document.getElementById('inputKet').value = d.keterangan || '';
-  _setUploadPreview(d.foto);
-  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('inputNama').placeholder = 'Contoh: Kursi Tiffany';
+  setUploadPreview(d.foto);
+  document.getElementById('modalBg').classList.add('open');
 }
 
-function _setUploadPreview(foto) {
-  var imgUrl = convertDriveUrl(foto);
-  var area = document.getElementById('uploadArea');
-  if (imgUrl) {
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+}
+
+document.getElementById('modalBg').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ============================================================
+// UPLOAD
+// ============================================================
+function handleFile(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('Max 5MB', 'error'); return; }
+  fileMime = file.type;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    fileBase64 = ev.target.result.split(',')[1];
+    var area = document.getElementById('uploadArea');
     area.classList.add('has-img');
-    area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
-      '<img src="' + imgUrl + '" onerror="this.style.display=\'none\'">' +
+    area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">' +
+      '<img src="' + ev.target.result + '" alt="preview">' +
       '<div class="upload-overlay"><span>📷 Ganti foto</span></div>';
-  } else { resetUploadArea(); }
+  };
+  reader.readAsDataURL(file);
 }
 
-function resetUploadArea() {
+function resetUpload() {
   var area = document.getElementById('uploadArea');
   area.classList.remove('has-img');
-  area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">' +
+  area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">' +
     '<span class="upload-icon">📷</span>' +
     '<div class="upload-text">Tap untuk pilih foto<br><small>dari HP atau PC</small></div>' +
     '<div class="upload-overlay"><span>Ganti foto</span></div>';
 }
 
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
+function setUploadPreview(foto) {
+  var img = driveUrl(foto);
+  var area = document.getElementById('uploadArea');
+  if (img) {
+    area.classList.add('has-img');
+    area.innerHTML = '<input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">' +
+      '<img src="' + img + '" onerror="this.style.display=\'none\'">' +
+      '<div class="upload-overlay"><span>📷 Ganti foto</span></div>';
+  } else { resetUpload(); }
 }
 
-async function saveModel() {
+function showProgress(pct) {
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+function hideProgress() {
+  setTimeout(function() {
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('progressFill').style.width = '0%';
+  }, 400);
+}
+
+// ============================================================
+// SAVE
+// ============================================================
+async function saveItem() {
+  var type = document.getElementById('modalType').value;
   var nama = document.getElementById('inputNama').value.trim();
   var harga = document.getElementById('inputHarga').value.trim();
-  var existingFoto = document.getElementById('savedFotoUrl').value;
-  var isSewa = currentTab === 'sewa';
+  var ket = document.getElementById('inputKet').value;
+  var existingFoto = document.getElementById('modalFotoUrl').value;
+  var rowIndex = document.getElementById('modalRowIndex').value;
+
   if (!nama) { showToast('Nama wajib diisi', 'error'); return; }
-  if (!selectedFileBase64 && !existingFoto) { showToast('Pilih foto terlebih dahulu', 'error'); return; }
+  if (!fileBase64 && !existingFoto) { showToast('Pilih foto terlebih dahulu', 'error'); return; }
 
   var btn = document.getElementById('btnSave');
   btn.disabled = true;
   var fotoUrl = existingFoto;
 
-  if (selectedFileBase64) {
-    btn.textContent = 'Mengupload...';
+  // Upload foto baru jika ada
+  if (fileBase64) {
+    btn.textContent = 'Mengupload foto...';
     showProgress(40);
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'uploadFoto', fileBase64: selectedFileBase64, mimeType: selectedFileMime, fileName: 'dekorasi_' + Date.now() })
+        body: JSON.stringify({ action: 'uploadFoto', fileBase64: fileBase64, mimeType: fileMime, fileName: type + '_' + Date.now() })
       });
       showProgress(80);
-      fotoUrl = await getLastUploadedUrl();
+      fotoUrl = await getLastUploadUrl();
       showProgress(100);
     } catch(e) {
       showToast('✗ Gagal upload foto', 'error');
@@ -537,197 +518,139 @@ async function saveModel() {
     hideProgress();
   }
 
-  btn.textContent = 'Menyimpan...';
-  var rowIndex = document.getElementById('editRowIndex').value;
+  // Tentukan action berdasarkan type dan isEditing
   var action;
-  if (isSewa) {
+  if (type === 'sewa') {
     action = isEditing ? 'updateSewa' : 'insertSewa';
   } else {
     action = isEditing ? 'updateKatalog' : 'insertKatalog';
   }
+
+  btn.textContent = 'Menyimpan...';
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: action, rowIndex: rowIndex ? Number(rowIndex) : null, nama: nama, harga: harga, foto: fotoUrl, keterangan: document.getElementById('inputKet').value, aktif: 'Ya' })
+      body: JSON.stringify({
+        action: action,
+        rowIndex: rowIndex ? Number(rowIndex) : null,
+        nama: nama, harga: harga, foto: fotoUrl,
+        keterangan: ket, aktif: 'Ya'
+      })
     });
     closeModal();
     showToast(isEditing ? '✓ Berhasil diperbarui' : '✓ Berhasil ditambahkan');
-    if (isSewa) {
-      setTimeout(function() { loadSewa(); }, 1200);
-    } else {
-      setTimeout(function() { loadKatalog(); }, 1200);
-    }
+    setTimeout(function() {
+      if (type === 'sewa') loadSewa(); else loadDekorasi();
+    }, 1200);
   } catch(e) {
     showToast('✗ Gagal menyimpan', 'error');
   }
   btn.disabled = false; btn.textContent = 'Simpan';
 }
 
-function getLastUploadedUrl() {
+function getLastUploadUrl() {
   return new Promise(function(resolve) {
-    var cb = 'uCb_' + Date.now();
+    var cb = 'ulCb' + Date.now();
     var s = document.createElement('script');
-    var t = setTimeout(function() { resolve(''); delete window[cb]; if(s.parentNode) document.body.removeChild(s); }, 8000);
-    window[cb] = function(json) { clearTimeout(t); delete window[cb]; document.body.removeChild(s); resolve(json.url || ''); };
+    var t = setTimeout(function() { resolve(''); window[cb] = null; if(s.parentNode) document.body.removeChild(s); }, 8000);
+    window[cb] = function(json) { clearTimeout(t); window[cb] = null; if(s.parentNode) document.body.removeChild(s); resolve(json.url || ''); };
     s.src = APPS_SCRIPT_URL + '?action=getLastUpload&callback=' + cb + '&t=' + Date.now();
     document.body.appendChild(s);
   });
 }
 
-function showProgress(pct) {
-  document.getElementById('uploadProgress').style.display = 'block';
-  document.getElementById('uploadProgressBar').style.width = pct + '%';
-}
-function hideProgress() {
-  setTimeout(function() { document.getElementById('uploadProgress').style.display = 'none'; document.getElementById('uploadProgressBar').style.width = '0%'; }, 400);
-}
-
-async function hapusModel(rowIndex, nama) {
+// ============================================================
+// HAPUS
+// ============================================================
+async function hapus(rowIndex, nama) {
   if (!confirm('Hapus model "' + nama + '"?')) return;
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'deleteKatalog', rowIndex: rowIndex }) });
     showToast('🗑️ Model dihapus');
-    setTimeout(function() { loadKatalog(); }, 1000);
-  } catch(e) { showToast('✗ Gagal menghapus', 'error'); }
+    setTimeout(loadDekorasi, 1000);
+  } catch(e) { showToast('✗ Gagal', 'error'); }
 }
 
 async function hapusSewa(rowIndex, nama) {
-  if (!confirm('Hapus item sewa "' + nama + '"?')) return;
+  if (!confirm('Hapus item "' + nama + '"?')) return;
   try {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'deleteSewa', rowIndex: rowIndex }) });
-    showToast('🗑️ Item sewa dihapus');
-    setTimeout(function() { loadSewa(); }, 1000);
-  } catch(e) { showToast('✗ Gagal menghapus', 'error'); }
-}
-
-function showToast(msg, type) {
-  type = type || 'success';
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + type + ' show';
-  setTimeout(function() { t.className = 'toast'; }, 3000);
+    showToast('🗑️ Item dihapus');
+    setTimeout(loadSewa, 1000);
+  } catch(e) { showToast('✗ Gagal', 'error'); }
 }
 
 // ============================================================
-// Lightbox — Pinch Zoom + Drag
+// LIGHTBOX
 // ============================================================
-let lbScale = 1, lbX = 0, lbY = 0;
-let lbDragging = false, lbLastX = 0, lbLastY = 0;
-let lbPinchDist = 0, lbPinchScale = 1;
-let lbLastTap = 0;
+var lbScale = 1, lbX = 0, lbY = 0;
+var lbDragging = false, lbLastX = 0, lbLastY = 0;
+var lbPinchDist = 0, lbPinchScale = 1, lbLastTap = 0;
 
-function openLightbox(imgUrl, nama, harga) {
-  const lb = document.getElementById('lightbox');
-  const img = document.getElementById('lightboxImg');
-  img.src = imgUrl;
-  document.getElementById('lightboxNama').textContent = nama;
-  document.getElementById('lightboxHarga').textContent = harga;
-  resetTransform();
-  lb.classList.add('open');
+function lbOpen(imgUrl, nama, harga) {
+  if (!imgUrl) return;
+  document.getElementById('lbImg').src = imgUrl;
+  document.getElementById('lbNama').textContent = nama;
+  document.getElementById('lbHarga').textContent = harga;
+  lbResetTransform();
+  document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
-  initLightboxGestures();
+  lbInitGestures();
 }
 
-function resetTransform() {
-  lbScale = 1; lbX = 0; lbY = 0;
-  applyTransform(true);
-}
-
-function applyTransform(animated) {
-  const img = document.getElementById('lightboxImg');
-  if (!img) return;
-  img.style.transition = animated ? 'transform 0.25s ease' : 'none';
-  img.style.transform = 'translate(' + lbX + 'px, ' + lbY + 'px) scale(' + lbScale + ')';
-}
-
-function closeLightbox() {
+function lbClose() {
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
-  resetTransform();
 }
 
-function initLightboxGestures() {
-  var img = document.getElementById('lightboxImg');
-  var wrap = document.getElementById('lightboxWrap');
+function lbResetTransform() {
+  lbScale = 1; lbX = 0; lbY = 0;
+  lbApply(true);
+}
 
-  wrap.onclick = function(e) {
-    if (e.target === wrap && lbScale <= 1) closeLightbox();
-  };
+function lbApply(anim) {
+  var img = document.getElementById('lbImg');
+  if (!img) return;
+  img.style.transition = anim ? 'transform 0.25s ease' : 'none';
+  img.style.transform = 'translate(' + lbX + 'px,' + lbY + 'px) scale(' + lbScale + ')';
+}
 
-  img.onmousedown = function(e) {
-    if (lbScale <= 1) return;
-    lbDragging = true;
-    lbLastX = e.clientX; lbLastY = e.clientY;
-    img.classList.add('dragging');
-    e.preventDefault();
-  };
-  window.onmousemove = function(e) {
-    if (!lbDragging) return;
-    lbX += e.clientX - lbLastX;
-    lbY += e.clientY - lbLastY;
-    lbLastX = e.clientX; lbLastY = e.clientY;
-    applyTransform(false);
-  };
-  window.onmouseup = function() {
-    lbDragging = false;
-    img.classList.remove('dragging');
-  };
-
-  img.ondblclick = function(e) {
-    e.stopPropagation();
-    if (lbScale > 1) resetTransform();
-    else { lbScale = 2.5; applyTransform(true); }
-  };
-
+function lbInitGestures() {
+  var img = document.getElementById('lbImg');
+  var wrap = document.getElementById('lbWrap');
+  wrap.onclick = function(e) { if (e.target === wrap && lbScale <= 1) lbClose(); };
+  img.ondblclick = function(e) { e.stopPropagation(); if (lbScale > 1) lbResetTransform(); else { lbScale = 2.5; lbApply(true); } };
+  img.onmousedown = function(e) { if (lbScale <= 1) return; lbDragging = true; lbLastX = e.clientX; lbLastY = e.clientY; img.classList.add('dragging'); e.preventDefault(); };
+  window.onmousemove = function(e) { if (!lbDragging) return; lbX += e.clientX - lbLastX; lbY += e.clientY - lbLastY; lbLastX = e.clientX; lbLastY = e.clientY; lbApply(false); };
+  window.onmouseup = function() { lbDragging = false; img.classList.remove('dragging'); };
   img.ontouchstart = function(e) {
     if (e.touches.length === 1) {
       var now = Date.now();
-      if (now - lbLastTap < 300) {
-        if (lbScale > 1) resetTransform();
-        else { lbScale = 2.5; applyTransform(true); }
-        lbLastTap = 0; return;
-      }
-      lbLastTap = now;
-      lbLastX = e.touches[0].clientX;
-      lbLastY = e.touches[0].clientY;
-    } else if (e.touches.length === 2) {
-      lbPinchDist = getTouchDist(e.touches);
-      lbPinchScale = lbScale;
-    }
+      if (now - lbLastTap < 300) { if (lbScale > 1) lbResetTransform(); else { lbScale = 2.5; lbApply(true); } lbLastTap = 0; return; }
+      lbLastTap = now; lbLastX = e.touches[0].clientX; lbLastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) { lbPinchDist = lbTouchDist(e.touches); lbPinchScale = lbScale; }
     e.preventDefault();
   };
-
   img.ontouchmove = function(e) {
     e.preventDefault();
-    if (e.touches.length === 1 && lbScale > 1) {
-      lbX += e.touches[0].clientX - lbLastX;
-      lbY += e.touches[0].clientY - lbLastY;
-      lbLastX = e.touches[0].clientX;
-      lbLastY = e.touches[0].clientY;
-      applyTransform(false);
-    } else if (e.touches.length === 2) {
-      var dist = getTouchDist(e.touches);
-      lbScale = Math.min(5, Math.max(1, lbPinchScale * (dist / lbPinchDist)));
-      if (lbScale <= 1) { lbX = 0; lbY = 0; }
-      applyTransform(false);
-    }
+    if (e.touches.length === 1 && lbScale > 1) { lbX += e.touches[0].clientX - lbLastX; lbY += e.touches[0].clientY - lbLastY; lbLastX = e.touches[0].clientX; lbLastY = e.touches[0].clientY; lbApply(false); }
+    else if (e.touches.length === 2) { var d = lbTouchDist(e.touches); lbScale = Math.min(5, Math.max(1, lbPinchScale * (d / lbPinchDist))); if (lbScale <= 1) { lbX = 0; lbY = 0; } lbApply(false); }
   };
-
-  img.ontouchend = function() {
-    if (lbScale < 1.05) resetTransform();
-  };
+  img.ontouchend = function() { if (lbScale < 1.05) lbResetTransform(); };
 }
 
-function getTouchDist(touches) {
-  var dx = touches[0].clientX - touches[1].clientX;
-  var dy = touches[0].clientY - touches[1].clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
+function lbTouchDist(t) { var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.sqrt(dx*dx+dy*dy); }
 
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'success') + ' show';
+  setTimeout(function() { el.className = 'toast'; }, 3000);
+}
 </script>
 </body>
 </html>
