@@ -6,476 +6,132 @@
 <title>Form Booking Dekorasi — Hanaya Blom</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #F7F3EE;
-    --warm-white: #FDFAF7;
-    --blush: #E8D5C4;
-    --rose: #C4956A;
-    --rose-deep: #A67452;
-    --sage: #8A9E8C;
-    --sage-light: #B5C9B7;
-    --charcoal: #2C2C2C;
-    --muted: #8A8278;
-    --border: #DDD5CB;
-    --error: #C0392B;
-    --success: #5A8F6A;
-  }
+:root {
+  --cream: #F7F3EE; --warm-white: #FDFAF7; --blush: #E8D5C4;
+  --rose: #C4956A; --rose-deep: #A67452; --sage: #8A9E8C;
+  --charcoal: #2C2C2C; --muted: #8A8278; --border: #DDD5CB; --error: #C0392B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; padding-bottom: 60px; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Header */
+.header { background: var(--charcoal); color: var(--cream); text-align: center; padding: 32px 20px 28px; position: relative; overflow: hidden; }
+.header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(196,149,106,0.18) 0%, transparent 60%); }
+.header-inner { position: relative; z-index: 1; }
+.brand { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 300; letter-spacing: 0.35em; text-transform: uppercase; color: var(--rose); margin-bottom: 8px; }
+.header h1 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; font-style: italic; color: var(--cream); line-height: 1.2; }
+.header p { font-size: 12px; color: rgba(247,243,238,0.55); margin-top: 8px; font-weight: 300; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--charcoal);
-    min-height: 100vh;
-    padding-bottom: 60px;
-  }
+/* Progress */
+.progress-wrap { background: var(--warm-white); padding: 16px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.progress-steps { display: flex; align-items: center; justify-content: center; max-width: 380px; margin: 0 auto; }
+.step-dot { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--warm-white); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--muted); transition: all 0.3s; flex-shrink: 0; }
+.step-dot.active { background: var(--rose); border-color: var(--rose); color: white; }
+.step-dot.done { background: var(--sage); border-color: var(--sage); color: white; }
+.step-line { flex: 1; height: 1.5px; background: var(--border); transition: background 0.3s; }
+.step-line.done { background: var(--sage); }
+.step-label { display: flex; justify-content: space-between; max-width: 380px; margin: 6px auto 0; padding: 0 2px; }
+.step-label span { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: center; width: 28px; }
+.step-label span.active { color: var(--rose); font-weight: 500; }
 
-  /* Header */
-  .header {
-    background: var(--charcoal);
-    color: var(--cream);
-    text-align: center;
-    padding: 32px 20px 28px;
-    position: relative;
-    overflow: hidden;
-  }
-  .header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(196,149,106,0.18) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(138,158,140,0.12) 0%, transparent 50%);
-  }
-  .header-inner { position: relative; z-index: 1; }
-  .brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    font-weight: 300;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--rose);
-    margin-bottom: 8px;
-  }
-  .header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--cream);
-    line-height: 1.2;
-  }
-  .header p {
-    font-size: 12px;
-    color: rgba(247,243,238,0.55);
-    margin-top: 8px;
-    font-weight: 300;
-    letter-spacing: 0.02em;
-  }
+/* Form */
+.form-container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; font-style: italic; color: var(--charcoal); margin: 28px 0 4px; }
+.section-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; font-weight: 300; }
+.field-group { margin-bottom: 18px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+label .req { color: var(--rose); margin-left: 2px; }
+input[type="text"], input[type="tel"], input[type="date"], input[type="time"], input[type="url"], textarea, select { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--warm-white); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--charcoal); outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+input:focus, textarea:focus, select:focus { border-color: var(--rose); }
+textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+.helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
 
-  /* Progress Bar */
-  .progress-wrap {
-    background: var(--warm-white);
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .progress-steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    max-width: 380px;
-    margin: 0 auto;
-  }
-  .step-dot {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    background: var(--warm-white);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-  }
-  .step-dot.active {
-    background: var(--rose);
-    border-color: var(--rose);
-    color: white;
-  }
-  .step-dot.done {
-    background: var(--sage);
-    border-color: var(--sage);
-    color: white;
-  }
-  .step-line {
-    flex: 1;
-    height: 1.5px;
-    background: var(--border);
-    transition: background 0.3s;
-  }
-  .step-line.done { background: var(--sage); }
-  .step-label {
-    display: flex;
-    justify-content: space-between;
-    max-width: 380px;
-    margin: 6px auto 0;
-    padding: 0 2px;
-  }
-  .step-label span {
-    font-size: 9px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-align: center;
-    width: 28px;
-  }
-  .step-label span.active { color: var(--rose); font-weight: 500; }
+/* Radio Pills */
+.radio-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.radio-pill input { display: none; }
+.radio-pill label { display: inline-block; padding: 8px 16px; border: 1.5px solid var(--border); border-radius: 30px; font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--charcoal); cursor: pointer; transition: all 0.2s; background: var(--warm-white); margin-bottom: 0; }
+.radio-pill input:checked + label { background: var(--rose); border-color: var(--rose); color: white; }
 
-  /* Form Container */
-  .form-container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 16px;
-  }
+/* Model Grid */
+.model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.model-card { border: 2px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: var(--warm-white); position: relative; }
+.model-card:hover { border-color: var(--rose); }
+.model-card.selected { border-color: var(--rose); }
+.model-card.selected::after { content: '✓'; position: absolute; top: 6px; right: 8px; background: var(--rose); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.model-img-wrap { position: relative; }
+.model-img { width: 100%; aspect-ratio: 3/2; object-fit: cover; background: var(--blush); display: block; }
+.model-img-placeholder { width: 100%; aspect-ratio: 3/2; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.model-img-placeholder span { font-size: 24px; }
+.model-img-placeholder small { font-size: 10px; color: var(--muted); }
+.zoom-hint { position: absolute; bottom: 4px; right: 6px; background: rgba(0,0,0,0.4); color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+.model-card:hover .zoom-hint { opacity: 1; }
+.model-info { padding: 8px 10px; }
+.model-name { font-size: 12px; font-weight: 500; color: var(--charcoal); }
+.model-price { font-size: 11px; color: var(--rose); font-weight: 500; margin-top: 2px; }
 
-  /* Step panels */
-  .step-panel { display: none; }
-  .step-panel.active { display: block; }
+/* Sewa Checklist */
+.sewa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.sewa-card { border: 2px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: var(--warm-white); position: relative; user-select: none; }
+.sewa-card:hover { border-color: var(--sage); }
+.sewa-card.checked { border-color: var(--sage); background: #EFF5F0; }
+.sewa-card.checked::after { content: '✓'; position: absolute; top: 6px; right: 8px; background: var(--sage); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.sewa-img { width: 100%; aspect-ratio: 3/2; background: linear-gradient(135deg, #d4e8d4, #f0f5f0); display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; }
+.sewa-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sewa-info { padding: 7px 10px; }
+.sewa-nama { font-size: 12px; font-weight: 500; color: var(--charcoal); }
+.sewa-harga { font-size: 11px; color: var(--sage); font-weight: 500; margin-top: 2px; }
 
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--charcoal);
-    margin: 28px 0 4px;
-  }
-  .section-sub {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 20px;
-    font-weight: 300;
-  }
+/* Nav Buttons */
+.nav-buttons { display: flex; gap: 10px; margin-top: 32px; padding-bottom: 20px; }
+.btn { flex: 1; padding: 14px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+.btn-back { background: var(--warm-white); border: 1.5px solid var(--border); color: var(--muted); flex: 0 0 80px; }
+.btn-next { background: var(--rose); color: white; }
+.btn-next:hover { background: var(--rose-deep); }
+.btn-submit { background: var(--sage); color: white; }
 
-  /* Field Group */
-  .field-group { margin-bottom: 18px; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* Preview */
+.preview-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 20px; }
+.preview-header { background: var(--charcoal); padding: 14px 18px; display: flex; align-items: center; gap: 10px; }
+.preview-header span { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; color: var(--cream); }
+.preview-acara { margin-left: auto; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); font-family: 'DM Sans', sans-serif; font-style: normal; font-weight: 500; }
+.preview-body { padding: 16px 18px; }
+.preview-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+.preview-row:last-child { border-bottom: none; }
+.preview-key { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; min-width: 110px; }
+.preview-val { font-size: 13px; color: var(--charcoal); text-align: right; flex: 1; }
+.preview-model-img { width: 100%; aspect-ratio: 3/1; background: linear-gradient(135deg, var(--blush), var(--cream)); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+.preview-model-img img { width: 100%; height: 100%; object-fit: cover; }
 
-  label {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  label .req { color: var(--rose); margin-left: 2px; }
+/* Lightbox */
+.lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.93); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
+.lightbox.open { display: flex; }
+.lb-close-btn { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+.lb-img-wrap { position: relative; width: 100%; flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.lb-img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center; will-change: transform; cursor: grab; touch-action: none; user-select: none; -webkit-user-drag: none; }
+.lb-img.dragging { cursor: grabbing; }
+.lb-footer { padding: 12px 20px 20px; text-align: center; flex-shrink: 0; }
+.lb-nama { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; color: white; }
+.lb-harga { font-size: 13px; color: var(--rose); margin-top: 4px; font-weight: 500; }
+.lb-hint { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+.lb-actions { margin-top: 12px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.lb-select-btn { padding: 10px 28px; background: var(--rose); color: white; border: none; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+.lb-reset-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
-  input[type="text"],
-  input[type="tel"],
-  input[type="date"],
-  input[type="time"],
-  input[type="url"],
-  textarea,
-  select {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    background: var(--warm-white);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--charcoal);
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--rose);
-  }
-  input.error, textarea.error, select.error {
-    border-color: var(--error);
-  }
-  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
-
-  .select-wrap { position: relative; }
-  .select-wrap::after {
-    content: '▾';
-    position: absolute;
-    right: 14px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    pointer-events: none;
-    font-size: 12px;
-  }
-
-  /* Radio Pills */
-  .radio-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-  .radio-pill input { display: none; }
-  .radio-pill label {
-    display: inline-block;
-    padding: 8px 16px;
-    border: 1.5px solid var(--border);
-    border-radius: 30px;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--charcoal);
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--warm-white);
-    margin-bottom: 0;
-  }
-  .radio-pill input:checked + label {
-    background: var(--rose);
-    border-color: var(--rose);
-    color: white;
-  }
-
-  /* Model Gallery */
-  .model-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 4px;
-  }
-  .model-card {
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: var(--warm-white);
-    position: relative;
-  }
-  .model-card:hover { border-color: var(--rose); }
-  .model-card.selected { border-color: var(--rose); }
-  .model-card.selected::after {
-    content: '✓';
-    position: absolute;
-    top: 6px; right: 8px;
-    background: var(--rose);
-    color: white;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-  }
-  .model-img {
-    width: 100%;
-    aspect-ratio: 3/2;
-    object-fit: cover;
-    background: var(--blush);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .model-img-placeholder {
-    width: 100%;
-    aspect-ratio: 3/2;
-    background: linear-gradient(135deg, var(--blush), var(--cream));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-  }
-  .model-img-placeholder span { font-size: 24px; }
-  .model-img-placeholder small { font-size: 10px; color: var(--muted); }
-  .model-info { padding: 8px 10px; }
-  .model-name { font-size: 12px; font-weight: 500; color: var(--charcoal); }
-  .model-price { font-size: 11px; color: var(--rose); font-weight: 500; margin-top: 2px; }
-
-  /* Sewa Checklist */
-  .sewa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-  .sewa-item { border: 2px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: var(--warm-white); position: relative; user-select: none; }
-  .sewa-item:hover { border-color: var(--sage); }
-  .sewa-item.checked { border-color: var(--sage); background: #EFF5F0; }
-  .sewa-item.checked::after { content: '✓'; position: absolute; top: 6px; right: 8px; background: var(--sage); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
-  .sewa-img { width: 100%; aspect-ratio: 3/2; object-fit: cover; background: linear-gradient(135deg, #d4e8d4, #f0f5f0); display: flex; align-items: center; justify-content: center; font-size: 24px; }
-  .sewa-img img { width: 100%; height: 100%; object-fit: cover; }
-  .sewa-info { padding: 7px 10px; }
-  .sewa-nama { font-size: 12px; font-weight: 500; color: var(--charcoal); }
-  .sewa-harga { font-size: 11px; color: var(--sage); font-weight: 500; margin-top: 2px; }
-    height: 1px;
-    background: var(--border);
-    margin: 24px 0;
-  }
-
-  /* Lightbox */
-  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
-  .lightbox.open { display: flex; }
-  .lightbox-img-wrap { position: relative; width: 100%; flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .lightbox-img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; will-change: transform; cursor: grab; user-select: none; -webkit-user-drag: none; touch-action: none; }
-  .lightbox-img.dragging { cursor: grabbing; transition: none !important; }
-  .lightbox-footer { display: none; padding: 12px 20px 24px; text-align: center; flex-shrink: 0; }
-  .lightbox.open .lightbox-footer { display: block; }
-  .lightbox-close { display: none; position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; align-items: center; justify-content: center; z-index: 10; }
-  .lightbox.open .lightbox-close { display: flex; }
-  .lightbox-nama { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-style: italic; color: white; }
-  .lightbox-harga { font-size: 13px; color: var(--rose); margin-top: 4px; font-weight: 500; }
-  .lightbox-hint { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; }
-  .lightbox-select { margin-top: 10px; padding: 10px 28px; background: var(--rose); color: white; border: none; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
-  .lightbox-reset { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); padding: 6px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
-  .model-img-wrap { position: relative; }
-  .model-zoom-hint { position: absolute; bottom: 4px; right: 6px; background: rgba(0,0,0,0.4); color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
-  .model-card:hover .model-zoom-hint { opacity: 1; }
-
-  /* Helper text */
-  .helper { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .err-msg { font-size: 11px; color: var(--error); margin-top: 4px; display: none; }
-
-  /* Navigation Buttons */
-  .nav-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 32px;
-    padding-bottom: 20px;
-  }
-  .btn {
-    flex: 1;
-    padding: 14px;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    letter-spacing: 0.02em;
-  }
-  .btn-back {
-    background: var(--warm-white);
-    border: 1.5px solid var(--border);
-    color: var(--muted);
-    flex: 0 0 80px;
-  }
-  .btn-next {
-    background: var(--rose);
-    color: white;
-  }
-  .btn-next:hover { background: var(--rose-deep); }
-  .btn-submit {
-    background: var(--sage);
-    color: white;
-  }
-  .btn-submit:hover { background: #728f74; }
-
-  /* Preview Panel */
-  .preview-card {
-    background: var(--warm-white);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-top: 20px;
-  }
-  .preview-header {
-    background: var(--charcoal);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .preview-header span {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    font-style: italic;
-    color: var(--cream);
-  }
-  .preview-header .preview-acara {
-    margin-left: auto;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--rose);
-    font-family: 'DM Sans', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-  }
-  .preview-body { padding: 16px 18px; }
-  .preview-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-  }
-  .preview-row:last-child { border-bottom: none; }
-  .preview-key {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    font-weight: 500;
-    min-width: 110px;
-  }
-  .preview-val {
-    font-size: 13px;
-    color: var(--charcoal);
-    text-align: right;
-    flex: 1;
-  }
-  .preview-model-img {
-    width: 100%;
-    aspect-ratio: 3/1;
-    background: linear-gradient(135deg, var(--blush), var(--cream));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; color: var(--muted);
-    border-radius: 8px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-  .preview-model-img img { width: 100%; height: 100%; object-fit: cover; }
-
-  /* Success Screen */
-  .success-screen {
-    display: none;
-    text-align: center;
-    padding: 60px 20px;
-  }
-  .success-icon {
-    width: 72px; height: 72px;
-    background: var(--sage);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 32px;
-  }
-  .success-screen h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 400;
-    font-style: italic;
-    margin-bottom: 8px;
-  }
-  .success-screen p { font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .success-screen .btn-wa {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #25D366;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    margin-top: 24px;
-  }
+/* Success */
+.success-screen { display: none; text-align: center; padding: 60px 20px; }
+.success-icon { width: 72px; height: 72px; background: var(--sage); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+.success-screen h2 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; font-style: italic; margin-bottom: 8px; }
+.success-screen p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.btn-wa { display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; text-decoration: none; margin-top: 24px; }
 </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="header">
   <div class="header-inner">
     <div class="brand">Hanaya Blom</div>
@@ -486,21 +142,22 @@
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightboxBtn()">✕</button>
-  <div class="lightbox-img-wrap" id="lightboxWrap">
-    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <button class="lb-close-btn" onclick="lbClose()">✕</button>
+  <div class="lb-img-wrap" id="lbWrap">
+    <img class="lb-img" id="lbImg" src="" alt="">
   </div>
-  <div class="lightbox-footer">
-    <div class="lightbox-nama" id="lightboxNama"></div>
-    <div class="lightbox-harga" id="lightboxHarga"></div>
-    <div class="lightbox-hint">Pinch untuk zoom · Geser untuk pindah · Double tap reset</div>
-    <br>
-    <button class="lightbox-select" id="lightboxSelectBtn" onclick="selectFromLightbox()">✓ Pilih Model Ini</button>
-    <br>
-    <button class="lightbox-reset" onclick="resetTransform()">Reset zoom</button>
+  <div class="lb-footer">
+    <div class="lb-nama" id="lbNama"></div>
+    <div class="lb-harga" id="lbHarga"></div>
+    <div class="lb-hint">Pinch zoom · Geser · Double tap reset</div>
+    <div class="lb-actions">
+      <button class="lb-select-btn" onclick="lbSelect()">✓ Pilih Model Ini</button>
+      <button class="lb-reset-btn" onclick="lbResetTransform()">Reset zoom</button>
+    </div>
   </div>
 </div>
 
+<!-- Main Form -->
 <div id="mainForm">
   <div class="progress-wrap">
     <div class="progress-steps">
@@ -525,7 +182,7 @@
     <!-- Step 1: Data Customer -->
     <div class="step-panel active" id="step1">
       <div class="section-title">Data Customer</div>
-      <div class="section-sub">Informasi pemesan & acara</div>
+      <div class="section-sub">Informasi pemesan &amp; acara</div>
 
       <div class="field-row">
         <div class="field-group">
@@ -541,12 +198,12 @@
       <div class="field-group">
         <label>Jenis Acara <span class="req">*</span></label>
         <div class="radio-pills" id="acaraPills">
-          <label class="radio-pill"><input type="radio" name="acara" value="Engagement"> <label>Engagement</label></label>
-          <label class="radio-pill"><input type="radio" name="acara" value="Wedding"> <label>Wedding</label></label>
-          <label class="radio-pill"><input type="radio" name="acara" value="Khitan"> <label>Khitan</label></label>
-          <label class="radio-pill"><input type="radio" name="acara" value="Aqiqah"> <label>Aqiqah</label></label>
-          <label class="radio-pill"><input type="radio" name="acara" value="Birthday"> <label>Birthday</label></label>
-          <label class="radio-pill"><input type="radio" name="acara" value="Custom"> <label>Custom</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Engagement"><label>Engagement</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Wedding"><label>Wedding</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Khitan"><label>Khitan</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Aqiqah"><label>Aqiqah</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Birthday"><label>Birthday</label></label>
+          <label class="radio-pill"><input type="radio" name="acara" value="Custom"><label>Custom</label></label>
         </div>
       </div>
 
@@ -562,11 +219,10 @@
       </div>
 
       <div class="divider"></div>
-
       <div class="section-title" style="margin-top:0">Nama di Dekorasi</div>
       <div class="section-sub">Nama yang akan tertulis di dekorasi</div>
 
-      <!-- Engagement / Wedding: 2 nama -->
+      <!-- Engagement/Wedding: dua nama -->
       <div id="namaDoubleWrap">
         <div class="field-row">
           <div class="field-group">
@@ -579,8 +235,7 @@
           </div>
         </div>
       </div>
-
-      <!-- Acara lain: 1 nama -->
+      <!-- Lainnya: satu nama -->
       <div id="namaSingleWrap" style="display:none">
         <div class="field-group">
           <label>Nama <span class="req">*</span></label>
@@ -590,22 +245,22 @@
 
       <div class="field-group">
         <label>Tulisan Nama di Dekorasi <span class="req">*</span></label>
-        <input type="text" id="tulisanNama" placeholder="Contoh: Sari & Budi atau Sari">
+        <input type="text" id="tulisanNama" placeholder="Contoh: Sari & Budi atau Tasyakuran Khitan Rafi">
         <div class="helper">Ketik tepat seperti yang ingin ditampilkan</div>
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-next" onclick="goToStep(2)">Lanjut →</button>
+        <button class="btn btn-next" onclick="goStep(2)">Lanjut →</button>
       </div>
     </div>
 
-    <!-- Step 2: Model Dekorasi -->
+    <!-- Step 2: Model & Sewa -->
     <div class="step-panel" id="step2">
       <div class="section-title">Pilih Model Dekorasi</div>
-      <div class="section-sub">Tap gambar untuk memilih model</div>
+      <div class="section-sub">Tap foto untuk preview besar, tap kartu untuk memilih</div>
 
       <div class="model-grid" id="modelGrid">
-        <!-- Populated by JS -->
+        <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">Memuat model...</div>
       </div>
 
       <div class="field-group" style="margin-top:18px">
@@ -614,17 +269,15 @@
       </div>
 
       <div class="divider"></div>
-
       <div class="section-title" style="margin-top:0">Tambahan Sewa</div>
       <div class="section-sub">Opsional — centang item yang ingin disewa</div>
-
-      <div id="sewaChecklist">
-        <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Memuat item sewa...</div>
+      <div id="sewaGrid">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Memuat item sewa...</div>
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-back" onclick="goToStep(1)">←</button>
-        <button class="btn btn-next" onclick="goToStep(3)">Lanjut →</button>
+        <button class="btn btn-back" onclick="goStep(1)">←</button>
+        <button class="btn btn-next" onclick="goStep(3)">Lanjut →</button>
       </div>
     </div>
 
@@ -637,28 +290,24 @@
         <label>Alamat Lengkap <span class="req">*</span></label>
         <textarea id="alamat" placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota..." style="min-height:90px"></textarea>
       </div>
-
       <div class="field-group">
         <label>Rumah Atas Nama <span class="req">*</span></label>
         <input type="text" id="atasNama" placeholder="Nama pemilik rumah / pihak yang dihubungi">
       </div>
-
       <div class="field-group">
         <label>Lokasi Dekor <span class="req">*</span></label>
         <div class="radio-pills">
-          <label class="radio-pill"><input type="radio" name="lokasiDekor" value="Indoor"> <label>Indoor</label></label>
-          <label class="radio-pill"><input type="radio" name="lokasiDekor" value="Outdoor"> <label>Outdoor</label></label>
+          <label class="radio-pill"><input type="radio" name="lokasiDekor" value="Indoor"><label>Indoor</label></label>
+          <label class="radio-pill"><input type="radio" name="lokasiDekor" value="Outdoor"><label>Outdoor</label></label>
         </div>
       </div>
-
       <div class="field-group">
         <label>Kondisi Tembok <span class="req">*</span></label>
         <div class="radio-pills">
-          <label class="radio-pill"><input type="radio" name="tembok" value="Boleh dipaku"> <label>Boleh dipaku</label></label>
-          <label class="radio-pill"><input type="radio" name="tembok" value="Tidak boleh dipaku"> <label>Tidak boleh dipaku</label></label>
+          <label class="radio-pill"><input type="radio" name="tembok" value="Boleh dipaku"><label>Boleh dipaku</label></label>
+          <label class="radio-pill"><input type="radio" name="tembok" value="Tidak boleh dipaku"><label>Tidak boleh dipaku</label></label>
         </div>
       </div>
-
       <div class="field-group">
         <label>Link Google Maps</label>
         <input type="url" id="gmaps" placeholder="https://maps.app.goo.gl/...">
@@ -666,12 +315,12 @@
       </div>
 
       <div class="nav-buttons">
-        <button class="btn btn-back" onclick="goToStep(2)">←</button>
-        <button class="btn btn-next" onclick="goToStep(4)">Review →</button>
+        <button class="btn btn-back" onclick="goStep(2)">←</button>
+        <button class="btn btn-next" onclick="goStep(4)">Review →</button>
       </div>
     </div>
 
-    <!-- Step 4: Preview & Submit -->
+    <!-- Step 4: Preview -->
     <div class="step-panel" id="step4">
       <div class="section-title">Konfirmasi Booking</div>
       <div class="section-sub">Cek kembali sebelum dikirim</div>
@@ -682,76 +331,39 @@
           <span class="preview-acara" id="prev-acara">—</span>
         </div>
         <div class="preview-body">
-          <div class="preview-model-img" id="prev-model-img">
-            <span>Belum dipilih</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Model</span>
-            <span class="preview-val" id="prev-model">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Harga Estimasi</span>
-            <span class="preview-val" id="prev-harga" style="color:var(--rose);font-weight:500">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">No. WhatsApp</span>
-            <span class="preview-val" id="prev-wa">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Tanggal & Jam</span>
-            <span class="preview-val" id="prev-tanggal">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Nama di Dekorasi</span>
-            <span class="preview-val" id="prev-tulisan">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Alamat</span>
-            <span class="preview-val" id="prev-alamat">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Atas Nama</span>
-            <span class="preview-val" id="prev-atasnama">—</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-key">Lokasi & Tembok</span>
-            <span class="preview-val" id="prev-lokasi">—</span>
-          </div>
-          <div class="preview-row" id="prev-catatan-row">
-            <span class="preview-key">Catatan</span>
-            <span class="preview-val" id="prev-catatan">—</span>
-          </div>
-          <div class="preview-row" id="prev-sewa-row" style="display:none">
-            <span class="preview-key">Item Sewa</span>
-            <span class="preview-val" id="prev-sewa">—</span>
-          </div>
-          <div class="preview-row" id="prev-gmaps-row">
-            <span class="preview-key">Google Maps</span>
-            <span class="preview-val"><a id="prev-gmaps" href="#" target="_blank" style="color:var(--rose)">Lihat lokasi</a></span>
-          </div>
+          <div class="preview-model-img" id="prev-model-img"><span>Belum dipilih</span></div>
+          <div class="preview-row"><span class="preview-key">Model</span><span class="preview-val" id="prev-model">—</span></div>
+          <div class="preview-row"><span class="preview-key">Harga Estimasi</span><span class="preview-val" id="prev-harga" style="color:var(--rose);font-weight:500">—</span></div>
+          <div class="preview-row" id="prev-sewa-row" style="display:none"><span class="preview-key">Item Sewa</span><span class="preview-val" id="prev-sewa" style="color:var(--sage)">—</span></div>
+          <div class="preview-row"><span class="preview-key">No. WhatsApp</span><span class="preview-val" id="prev-wa">—</span></div>
+          <div class="preview-row"><span class="preview-key">Tanggal & Jam</span><span class="preview-val" id="prev-tanggal">—</span></div>
+          <div class="preview-row"><span class="preview-key">Tulisan Nama</span><span class="preview-val" id="prev-tulisan">—</span></div>
+          <div class="preview-row"><span class="preview-key">Alamat</span><span class="preview-val" id="prev-alamat">—</span></div>
+          <div class="preview-row"><span class="preview-key">Atas Nama</span><span class="preview-val" id="prev-atasnama">—</span></div>
+          <div class="preview-row"><span class="preview-key">Lokasi & Tembok</span><span class="preview-val" id="prev-lokasi">—</span></div>
+          <div class="preview-row"><span class="preview-key">Catatan</span><span class="preview-val" id="prev-catatan">—</span></div>
+          <div class="preview-row" id="prev-gmaps-row" style="display:none"><span class="preview-key">Google Maps</span><span class="preview-val"><a id="prev-gmaps-link" href="#" target="_blank" style="color:var(--rose)">Lihat lokasi</a></span></div>
         </div>
       </div>
 
-      <p style="font-size:12px;color:var(--muted);margin-top:12px;text-align:center;">
-        Masih ada yang salah? Tap <strong>← Edit</strong> untuk kembali
-      </p>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px;text-align:center;">Masih ada yang salah? Tap <strong>← Edit</strong> untuk kembali</p>
 
       <div class="nav-buttons">
-        <button class="btn btn-back" onclick="goToStep(3)">← Edit</button>
+        <button class="btn btn-back" onclick="goStep(3)">← Edit</button>
         <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">Kirim Booking ✓</button>
       </div>
     </div>
 
-  </div><!-- /form-container -->
-</div><!-- /mainForm -->
+  </div>
+</div>
 
-<!-- Success Screen -->
+<!-- Success -->
 <div class="success-screen" id="successScreen">
   <div class="form-container" style="max-width:360px">
     <div class="success-icon">🌸</div>
     <h2>Booking Terkirim!</h2>
     <p>Terima kasih telah memesan dekorasi di <strong>Hanaya Blom</strong>.<br>Tim kami akan segera menghubungi kamu via WhatsApp untuk konfirmasi lebih lanjut.</p>
-    <a id="waConfirmLink" href="#" class="btn-wa">
+    <a id="waLink" href="#" class="btn-wa">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Chat via WhatsApp
     </a>
@@ -760,323 +372,176 @@
 
 <script>
 // ============================================================
-// CONFIG — ganti dengan URL Apps Script kamu
+// CONFIG
 // ============================================================
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdNo6J45OHxZm65_uidaip-UvkJ2TPfDSWBEmAs-k0nyJ12kiuiwUgOWkIniftaJlK/exec';
 const WA_NUMBER = '628999478692';
 
 // ============================================================
-// State
+// STATE
 // ============================================================
-let MODELS = [];
-let selectedModel = null;
 let currentStep = 1;
+let MODELS = [];
+let SEWA_ITEMS = [];
+let selectedModel = null;
+let selectedSewa = {}; // { id: { nama, harga } }
 
 // ============================================================
-// Init
+// INIT
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  loadKatalog();
+document.addEventListener('DOMContentLoaded', function() {
+  loadModels();
   loadSewa();
 
-  document.querySelectorAll('.radio-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      const input = pill.querySelector('input');
+  // Radio pills
+  document.querySelectorAll('.radio-pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      var input = pill.querySelector('input');
       if (input) { input.checked = true; input.dispatchEvent(new Event('change')); }
     });
   });
 
-  document.querySelectorAll('input[name="acara"]').forEach(radio => {
-    radio.addEventListener('change', toggleNamaFields);
+  // Toggle nama fields
+  document.querySelectorAll('input[name="acara"]').forEach(function(r) {
+    r.addEventListener('change', toggleNama);
   });
 });
 
 // ============================================================
-// Load Katalog dari Sheets (JSONP)
+// JSONP HELPER
 // ============================================================
-function loadKatalog() {
-  const grid = document.getElementById('modelGrid');
-  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">Memuat model dekorasi...</div>`;
-
-  const callbackName = 'fkCb' + Date.now();
-  const script = document.createElement('script');
-  script.onerror = function() {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">⚠️ Gagal memuat model. Coba refresh halaman.</div>`;
-  };
-
-  // Assign DULU sebelum append script
-  window[callbackName] = function(json) {
-    delete window[callbackName];
-    MODELS = (json.data || []).map(d => ({
-      id: d.id,
-      name: d.nama,
-      price: d.harga ? Number(d.harga) : null,
-      img: convertDriveUrl(d.foto),
-      keterangan: d.keterangan,
-    }));
-    renderModels();
-  };
-
-  const timeout = setTimeout(() => {
-    delete window[callbackName];
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">⚠️ Gagal memuat model. Coba refresh halaman.</div>`;
-    if (script.parentNode) document.body.removeChild(script);
-  }, 12000);
-
-  const origCb = window[callbackName];
-  window[callbackName] = function(json) {
-    clearTimeout(timeout);
-    if (script.parentNode) document.body.removeChild(script);
-    origCb(json);
-  };
-
-  script.src = APPS_SCRIPT_URL + '?action=getKatalog&callback=' + callbackName + '&t=' + Date.now();
-  document.body.appendChild(script);
-}
-
-function convertDriveUrl(url) {
-  if (!url) return '';
-  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
-  return url;
-}
-
-// ============================================================
-// Load Sewa
-// ============================================================
-let SEWA_ITEMS = [];
-let selectedSewa = {};
-
-function loadSewa() {
-  const cb = 'swCb' + Date.now();
-  const s = document.createElement('script');
+function jsonpFetch(action, onSuccess, onFail) {
+  var cb = 'cb' + Date.now() + Math.floor(Math.random() * 9999);
+  var s = document.createElement('script');
   window[cb] = function(json) {
     clearTimeout(timer);
     window[cb] = null;
     if (s.parentNode) document.body.removeChild(s);
-    SEWA_ITEMS = json.data || [];
-    renderSewaChecklist();
+    onSuccess(json);
   };
-  const timer = setTimeout(function() {
+  var timer = setTimeout(function() {
     window[cb] = null;
     if (s.parentNode) document.body.removeChild(s);
-    document.getElementById('sewaChecklist').innerHTML =
-      '<p style="font-size:12px;color:var(--muted);text-align:center">Item sewa tidak tersedia saat ini</p>';
+    if (onFail) onFail();
   }, 12000);
-  s.onerror = function() { clearTimeout(timer); window[cb] = null; };
-  s.src = APPS_SCRIPT_URL + '?action=getSewa&callback=' + cb + '&t=' + Date.now();
+  s.onerror = function() { clearTimeout(timer); window[cb] = null; if (s.parentNode) document.body.removeChild(s); if (onFail) onFail(); };
+  s.src = APPS_SCRIPT_URL + '?action=' + action + '&callback=' + cb + '&t=' + Date.now();
   document.body.appendChild(s);
 }
 
-function renderSewaChecklist() {
-  const wrap = document.getElementById('sewaChecklist');
-  if (!SEWA_ITEMS.length) {
-    wrap.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;padding:10px 0">Tidak ada item sewa tersedia</p>';
+function driveUrl(url) {
+  if (!url) return '';
+  var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? 'https://lh3.googleusercontent.com/d/' + m[1] : url;
+}
+
+// ============================================================
+// LOAD MODELS
+// ============================================================
+function loadModels() {
+  var grid = document.getElementById('modelGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">Memuat model dekorasi...</div>';
+  jsonpFetch('getKatalog',
+    function(json) {
+      MODELS = (json.data || []).map(function(d) {
+        return { id: d.id, name: d.nama, price: d.harga ? Number(d.harga) : null, img: driveUrl(d.foto), rawFoto: d.foto };
+      });
+      renderModels();
+    },
+    function() {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">⚠️ Gagal memuat model.<br><button onclick="loadModels()" style="margin-top:10px;padding:8px 16px;background:var(--rose);color:white;border:none;border-radius:8px;cursor:pointer;font-size:12px">↻ Refresh</button></div>';
+    }
+  );
+}
+
+function renderModels() {
+  var grid = document.getElementById('modelGrid');
+  if (!MODELS.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">🌸 Belum ada model tersedia.</div>';
     return;
   }
-  wrap.innerHTML = '<div class="sewa-grid">' + SEWA_ITEMS.map(item => {
-    const imgUrl = convertDriveUrl(item.foto);
-    const harga = item.harga ? 'Rp ' + Number(item.harga).toLocaleString('id-ID') + '/acara' : 'Harga custom';
-    return `<div class="sewa-item" id="sewa-${item.id}" onclick="toggleSewa('${item.id}','${(item.nama||'').replace(/'/g,"\\'")}','${harga}')">
-      <div class="sewa-img">${imgUrl ? `<img src="${imgUrl}" onerror="this.parentElement.innerHTML='🪑'">` : '🪑'}</div>
-      <div class="sewa-info">
-        <div class="sewa-nama">${item.nama || '—'}</div>
-        <div class="sewa-harga">${harga}</div>
-      </div>
-    </div>`;
-  }).join('') + '</div>';
+  grid.innerHTML = MODELS.map(function(m) {
+    var price = m.price ? 'Rp ' + m.price.toLocaleString('id-ID') : 'Harga custom';
+    var priceEsc = price.replace(/'/g, "\\'");
+    var nameEsc = (m.name || '').replace(/'/g, "\\'");
+    return '<div class="model-card" id="mc-' + m.id + '" onclick="selectModel(\'' + m.id + '\')">' +
+      '<div class="model-img-wrap">' +
+        (m.img
+          ? '<img class="model-img" src="' + m.img + '" alt="' + (m.name||'') + '" onerror="this.outerHTML=\'<div class=&quot;model-img-placeholder&quot;><span>🌸</span></div>\'" onclick="event.stopPropagation();lbOpen(\'' + m.img + '\',\'' + nameEsc + '\',\'' + priceEsc + '\',\'' + m.id + '\')">'
+          : '<div class="model-img-placeholder"><span>🌸</span><small>Foto segera hadir</small></div>'
+        ) +
+        (m.img ? '<div class="zoom-hint">🔍 tap foto</div>' : '') +
+      '</div>' +
+      '<div class="model-info"><div class="model-name">' + (m.name||'—') + '</div><div class="model-price">' + price + '</div></div>' +
+    '</div>';
+  }).join('');
+}
+
+function selectModel(id) {
+  document.querySelectorAll('.model-card').forEach(function(c) { c.classList.remove('selected'); });
+  var card = document.getElementById('mc-' + id);
+  if (card) card.classList.add('selected');
+  selectedModel = MODELS.find(function(m) { return m.id === id; }) || null;
+}
+
+// ============================================================
+// LOAD SEWA
+// ============================================================
+function loadSewa() {
+  var grid = document.getElementById('sewaGrid');
+  grid.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Memuat item sewa...</div>';
+  jsonpFetch('getSewa',
+    function(json) {
+      SEWA_ITEMS = json.data || [];
+      renderSewa();
+    },
+    function() {
+      grid.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Item sewa tidak tersedia</div>';
+    }
+  );
+}
+
+function renderSewa() {
+  var grid = document.getElementById('sewaGrid');
+  if (!SEWA_ITEMS.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Tidak ada item sewa tersedia</div>';
+    return;
+  }
+  var html = '<div class="sewa-grid">';
+  SEWA_ITEMS.forEach(function(item) {
+    var img = driveUrl(item.foto);
+    var harga = item.harga ? 'Rp ' + Number(item.harga).toLocaleString('id-ID') + '/acara' : 'Harga custom';
+    var idEsc = (item.id || '').replace(/'/g, "\\'");
+    var namaEsc = (item.nama || '').replace(/'/g, "\\'");
+    var hargaEsc = harga.replace(/'/g, "\\'");
+    html += '<div class="sewa-card" id="sw-' + item.id + '" onclick="toggleSewa(\'' + idEsc + '\',\'' + namaEsc + '\',\'' + hargaEsc + '\')">' +
+      '<div class="sewa-img">' + (img ? '<img src="' + img + '" alt="' + (item.nama||'') + '" onerror="this.parentElement.innerHTML=\'🪑\'">' : '🪑') + '</div>' +
+      '<div class="sewa-info"><div class="sewa-nama">' + (item.nama||'—') + '</div><div class="sewa-harga">' + harga + '</div></div>' +
+    '</div>';
+  });
+  html += '</div>';
+  grid.innerHTML = html;
 }
 
 function toggleSewa(id, nama, harga) {
   if (selectedSewa[id]) {
     delete selectedSewa[id];
-    document.getElementById('sewa-' + id)?.classList.remove('checked');
+    var el = document.getElementById('sw-' + id);
+    if (el) el.classList.remove('checked');
   } else {
-    selectedSewa[id] = { nama, harga };
-    document.getElementById('sewa-' + id)?.classList.add('checked');
+    selectedSewa[id] = { nama: nama, harga: harga };
+    var el = document.getElementById('sw-' + id);
+    if (el) el.classList.add('checked');
   }
 }
 
-function toggleNamaFields() {
-  const acara = document.querySelector('input[name="acara"]:checked')?.value || '';
-  const isDouble = ['Engagement', 'Wedding'].includes(acara);
-  document.getElementById('namaDoubleWrap').style.display = isDouble ? '' : 'none';
-  document.getElementById('namaSingleWrap').style.display = isDouble ? 'none' : '';
-  // Auto-fill tulisanNama
-  // Tulisan nama diisi manual — tidak ada auto-fill
-}
-
-function renderModels() {
-  const grid = document.getElementById('modelGrid');
-  if (!MODELS.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);font-size:13px">🌸 Belum ada model tersedia saat ini.</div>`;
-    return;
-  }
-  grid.innerHTML = MODELS.map(m => `
-    <div class="model-card" id="mc-${m.id}" onclick="selectModel('${m.id}')">
-      <div class="model-img-wrap">
-        ${m.img
-          ? `<img class="model-img" src="${m.img}" alt="${m.name}"
-               onerror="this.outerHTML='<div class=\\'model-img-placeholder\\'><span>🌸</span></div>'"
-               onclick="event.stopPropagation(); openLightbox('${m.img}','${m.name.replace(/'/g,"\\'")}','${m.price ? 'Rp ' + m.price.toLocaleString('id-ID') : 'Harga custom'}','${m.id}')">`
-          : `<div class="model-img-placeholder"><span>🌸</span><small>Foto segera hadir</small></div>`
-        }
-        <div class="model-zoom-hint">🔍 tap foto</div>
-      </div>
-      <div class="model-info">
-        <div class="model-name">${m.name}</div>
-        <div class="model-price">${m.price ? 'Rp ' + m.price.toLocaleString('id-ID') : 'Harga custom'}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function selectModel(id) {
-  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('mc-' + id).classList.add('selected');
-  selectedModel = MODELS.find(m => m.id === id);
-}
-
 // ============================================================
-// Lightbox — Pinch Zoom + Drag
+// STEP NAVIGATION
 // ============================================================
-let lightboxModelId = null;
-let lbScale = 1, lbX = 0, lbY = 0;
-let lbDragging = false, lbLastX = 0, lbLastY = 0;
-let lbPinchDist = 0, lbPinchScale = 1;
-let lbLastTap = 0;
-
-function openLightbox(imgUrl, nama, harga, modelId) {
-  lightboxModelId = modelId;
-  const lb = document.getElementById('lightbox');
-  const img = document.getElementById('lightboxImg');
-  img.src = imgUrl;
-  document.getElementById('lightboxNama').textContent = nama;
-  document.getElementById('lightboxHarga').textContent = harga;
-  resetTransform();
-  lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  initLightboxGestures();
-}
-
-function resetTransform() {
-  lbScale = 1; lbX = 0; lbY = 0;
-  applyTransform(true);
-}
-
-function applyTransform(animated) {
-  const img = document.getElementById('lightboxImg');
-  if (!img) return;
-  img.style.transition = animated ? 'transform 0.25s ease' : 'none';
-  img.style.transform = `translate(${lbX}px, ${lbY}px) scale(${lbScale})`;
-}
-
-function closeLightboxBtn() { _doCloseLightbox(); }
-function _doCloseLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-  resetTransform();
-}
-
-function selectFromLightbox() {
-  if (lightboxModelId) selectModel(lightboxModelId);
-  _doCloseLightbox();
-}
-
-function initLightboxGestures() {
-  const img = document.getElementById('lightboxImg');
-  const wrap = document.getElementById('lightboxWrap');
-
-  // Tap luar (wrap) untuk tutup
-  wrap.onclick = function(e) {
-    if (e.target === wrap && lbScale <= 1) _doCloseLightbox();
-  };
-
-  // ── MOUSE drag ──
-  img.onmousedown = function(e) {
-    if (lbScale <= 1) return;
-    lbDragging = true;
-    lbLastX = e.clientX; lbLastY = e.clientY;
-    img.classList.add('dragging');
-    e.preventDefault();
-  };
-  window.onmousemove = function(e) {
-    if (!lbDragging) return;
-    lbX += e.clientX - lbLastX;
-    lbY += e.clientY - lbLastY;
-    lbLastX = e.clientX; lbLastY = e.clientY;
-    applyTransform(false);
-  };
-  window.onmouseup = function() {
-    lbDragging = false;
-    img.classList.remove('dragging');
-  };
-
-  // Double click zoom
-  img.ondblclick = function(e) {
-    e.stopPropagation();
-    if (lbScale > 1) { resetTransform(); }
-    else { lbScale = 2.5; applyTransform(true); }
-  };
-
-  // ── TOUCH events ──
-  img.ontouchstart = function(e) {
-    if (e.touches.length === 1) {
-      // Double tap
-      const now = Date.now();
-      if (now - lbLastTap < 300) {
-        if (lbScale > 1) resetTransform();
-        else { lbScale = 2.5; applyTransform(true); }
-        lbLastTap = 0; return;
-      }
-      lbLastTap = now;
-      // Drag start
-      lbLastX = e.touches[0].clientX;
-      lbLastY = e.touches[0].clientY;
-    } else if (e.touches.length === 2) {
-      // Pinch start
-      lbPinchDist = getTouchDist(e.touches);
-      lbPinchScale = lbScale;
-    }
-    e.preventDefault();
-  };
-
-  img.ontouchmove = function(e) {
-    e.preventDefault();
-    if (e.touches.length === 1 && lbScale > 1) {
-      // Drag
-      lbX += e.touches[0].clientX - lbLastX;
-      lbY += e.touches[0].clientY - lbLastY;
-      lbLastX = e.touches[0].clientX;
-      lbLastY = e.touches[0].clientY;
-      applyTransform(false);
-    } else if (e.touches.length === 2) {
-      // Pinch zoom
-      const dist = getTouchDist(e.touches);
-      lbScale = Math.min(5, Math.max(1, lbPinchScale * (dist / lbPinchDist)));
-      if (lbScale <= 1) { lbX = 0; lbY = 0; }
-      applyTransform(false);
-    }
-  };
-
-  img.ontouchend = function(e) {
-    if (lbScale < 1.05) resetTransform();
-  };
-}
-
-function getTouchDist(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-// ============================================================
-// Navigation & Validation
-// ============================================================
-function goToStep(n) {
-  if (n > currentStep && !validateStep(currentStep)) return;
+function goStep(n) {
+  if (n > currentStep && !validate(currentStep)) return;
   currentStep = n;
-  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('step' + n).classList.add('active');
   updateProgress(n);
   if (n === 4) buildPreview();
@@ -1084,26 +549,26 @@ function goToStep(n) {
 }
 
 function updateProgress(n) {
-  for (let i = 1; i <= 4; i++) {
-    const dot = document.getElementById('dot' + i);
-    const lbl = document.getElementById('lbl' + i);
+  for (var i = 1; i <= 4; i++) {
+    var dot = document.getElementById('dot' + i);
+    var lbl = document.getElementById('lbl' + i);
     dot.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
     if (lbl) lbl.className = i === n ? 'active' : '';
     if (i < 4) {
-      const line = document.getElementById('line' + i);
+      var line = document.getElementById('line' + i);
       if (line) line.className = 'step-line' + (i < n ? ' done' : '');
     }
   }
 }
 
-function validateStep(step) {
+function validate(step) {
   if (step === 1) {
-    const nama = document.getElementById('namaPemesan').value.trim();
-    const wa = document.getElementById('noWA').value.trim();
-    const acara = document.querySelector('input[name="acara"]:checked');
-    const tgl = document.getElementById('tanggalAcara').value;
-    const jam = document.getElementById('jamAcara').value;
-    const tulisan = document.getElementById('tulisanNama').value.trim();
+    var nama = document.getElementById('namaPemesan').value.trim();
+    var wa = document.getElementById('noWA').value.trim();
+    var acara = document.querySelector('input[name="acara"]:checked');
+    var tgl = document.getElementById('tanggalAcara').value;
+    var jam = document.getElementById('jamAcara').value;
+    var tulisan = document.getElementById('tulisanNama').value.trim();
     if (!nama || !wa || !acara || !tgl || !jam || !tulisan) {
       alert('Lengkapi semua field yang wajib diisi (bertanda *)');
       return false;
@@ -1111,18 +576,15 @@ function validateStep(step) {
     return true;
   }
   if (step === 2) {
-    if (!selectedModel) {
-      alert('Pilih model dekorasi terlebih dahulu');
-      return false;
-    }
+    if (!selectedModel) { alert('Pilih model dekorasi terlebih dahulu'); return false; }
     return true;
   }
   if (step === 3) {
-    const alamat = document.getElementById('alamat').value.trim();
-    const atasnama = document.getElementById('atasNama').value.trim();
-    const lokasiDekor = document.querySelector('input[name="lokasiDekor"]:checked');
-    const tembok = document.querySelector('input[name="tembok"]:checked');
-    if (!alamat || !atasnama || !lokasiDekor || !tembok) {
+    var alamat = document.getElementById('alamat').value.trim();
+    var atas = document.getElementById('atasNama').value.trim();
+    var lok = document.querySelector('input[name="lokasiDekor"]:checked');
+    var tembok = document.querySelector('input[name="tembok"]:checked');
+    if (!alamat || !atas || !lok || !tembok) {
       alert('Lengkapi semua field yang wajib diisi (bertanda *)');
       return false;
     }
@@ -1132,129 +594,216 @@ function validateStep(step) {
 }
 
 // ============================================================
-// Preview
+// NAMA TOGGLE
+// ============================================================
+function toggleNama() {
+  var acara = document.querySelector('input[name="acara"]:checked');
+  var val = acara ? acara.value : '';
+  var isDouble = (val === 'Engagement' || val === 'Wedding');
+  document.getElementById('namaDoubleWrap').style.display = isDouble ? '' : 'none';
+  document.getElementById('namaSingleWrap').style.display = isDouble ? 'none' : '';
+}
+
+// ============================================================
+// PREVIEW
 // ============================================================
 function buildPreview() {
-  const nama = document.getElementById('namaPemesan').value;
-  const wa = document.getElementById('noWA').value;
-  const acara = document.querySelector('input[name="acara"]:checked')?.value || '—';
-  const tgl = document.getElementById('tanggalAcara').value;
-  const jam = document.getElementById('jamAcara').value;
-  const namaP = document.getElementById('namaPerempuan').value;
-  const namaL = document.getElementById('namaLaki').value;
-  const tulisan = document.getElementById('tulisanNama').value;
-  const catatan = document.getElementById('catatanDekorasi').value;
-  const alamat = document.getElementById('alamat').value;
-  const atasnama = document.getElementById('atasNama').value;
-  const lokasiDekor = document.querySelector('input[name="lokasiDekor"]:checked')?.value || '—';
-  const tembok = document.querySelector('input[name="tembok"]:checked')?.value || '—';
-  const gmaps = document.getElementById('gmaps').value;
+  var nama = document.getElementById('namaPemesan').value;
+  var wa = document.getElementById('noWA').value;
+  var acara = document.querySelector('input[name="acara"]:checked');
+  var acaraVal = acara ? acara.value : '—';
+  var tgl = document.getElementById('tanggalAcara').value;
+  var jam = document.getElementById('jamAcara').value;
+  var tulisan = document.getElementById('tulisanNama').value;
+  var catatan = document.getElementById('catatanDekorasi').value;
+  var alamat = document.getElementById('alamat').value;
+  var atas = document.getElementById('atasNama').value;
+  var lok = document.querySelector('input[name="lokasiDekor"]:checked');
+  var tembok = document.querySelector('input[name="tembok"]:checked');
+  var gmaps = document.getElementById('gmaps').value;
 
   document.getElementById('prev-nama').textContent = nama;
-  document.getElementById('prev-acara').textContent = acara;
+  document.getElementById('prev-acara').textContent = acaraVal;
   document.getElementById('prev-wa').textContent = wa;
 
-  const tglFormatted = tgl ? new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) : '—';
-  document.getElementById('prev-tanggal').textContent = `${tglFormatted}, ${jam}`;
+  var tglFmt = tgl ? new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) : '—';
+  document.getElementById('prev-tanggal').textContent = tglFmt + ', ' + (jam || '—');
   document.getElementById('prev-tulisan').textContent = tulisan || '—';
   document.getElementById('prev-alamat').textContent = alamat;
-  document.getElementById('prev-atasnama').textContent = atasnama;
-  document.getElementById('prev-lokasi').textContent = `${lokasiDekor} · ${tembok}`;
+  document.getElementById('prev-atasnama').textContent = atas;
+  document.getElementById('prev-lokasi').textContent = (lok ? lok.value : '—') + ' · ' + (tembok ? tembok.value : '—');
   document.getElementById('prev-catatan').textContent = catatan || '(tidak ada)';
 
+  if (selectedModel) {
+    document.getElementById('prev-model').textContent = selectedModel.name;
+    document.getElementById('prev-harga').textContent = selectedModel.price ? 'Rp ' + selectedModel.price.toLocaleString('id-ID') + ' (estimasi)' : 'Harga custom — akan dikonfirmasi';
+    var imgDiv = document.getElementById('prev-model-img');
+    if (selectedModel.img) imgDiv.innerHTML = '<img src="' + selectedModel.img + '" style="width:100%;height:100%;object-fit:cover">';
+    else imgDiv.innerHTML = '<span>🌸 ' + selectedModel.name + '</span>';
+  }
+
   // Sewa
-  const sewaKeys = Object.keys(selectedSewa);
+  var sewaKeys = Object.keys(selectedSewa);
   if (sewaKeys.length > 0) {
-    const sewaText = sewaKeys.map(k => selectedSewa[k].nama).join(', ');
-    document.getElementById('prev-sewa').textContent = sewaText;
+    document.getElementById('prev-sewa').textContent = sewaKeys.map(function(k) { return selectedSewa[k].nama; }).join(', ');
     document.getElementById('prev-sewa-row').style.display = 'flex';
   } else {
     document.getElementById('prev-sewa-row').style.display = 'none';
   }
 
-  if (selectedModel) {
-    document.getElementById('prev-model').textContent = selectedModel.name;
-    document.getElementById('prev-harga').textContent = selectedModel.price
-      ? 'Rp ' + selectedModel.price.toLocaleString('id-ID') + ' (estimasi)'
-      : 'Harga custom — akan dikonfirmasi';
-
-    const imgDiv = document.getElementById('prev-model-img');
-    if (selectedModel.img) {
-      imgDiv.innerHTML = `<img src="${selectedModel.img}" style="width:100%;height:100%;object-fit:cover">`;
-    } else {
-      imgDiv.innerHTML = `<span>${selectedModel.emoji} ${selectedModel.name}</span>`;
-    }
-  }
-
   if (gmaps) {
     document.getElementById('prev-gmaps-row').style.display = 'flex';
-    document.getElementById('prev-gmaps').href = gmaps;
+    document.getElementById('prev-gmaps-link').href = gmaps;
   } else {
     document.getElementById('prev-gmaps-row').style.display = 'none';
   }
 
-  // WA link for success
-  const msg = encodeURIComponent(
-    `Halo Hanaya Blom! Saya ${nama} baru saja mengisi form booking dekorasi untuk acara ${acara} pada ${tglFormatted}. Mohon konfirmasinya ya 🌸`
-  );
-  document.getElementById('waConfirmLink').href = `https://wa.me/${WA_NUMBER}?text=${msg}`;
+  var msg = encodeURIComponent('Halo Hanaya Blom! Saya ' + nama + ' baru saja mengisi form booking dekorasi untuk acara ' + acaraVal + ' pada ' + tglFmt + '. Mohon konfirmasinya ya 🌸');
+  document.getElementById('waLink').href = 'https://wa.me/' + WA_NUMBER + '?text=' + msg;
 }
 
 // ============================================================
-// Submit
+// SUBMIT
 // ============================================================
 async function submitForm() {
-  const btn = document.getElementById('submitBtn');
+  var btn = document.getElementById('submitBtn');
   btn.textContent = 'Mengirim...';
   btn.disabled = true;
 
-  const acara = document.querySelector('input[name="acara"]:checked')?.value;
-  const isDouble = ['Engagement', 'Wedding'].includes(acara);
+  var acara = document.querySelector('input[name="acara"]:checked');
+  var acaraVal = acara ? acara.value : '';
+  var isDouble = (acaraVal === 'Engagement' || acaraVal === 'Wedding');
+  var sewaList = Object.values(selectedSewa).map(function(s) { return s.nama; }).join(', ');
 
-  const payload = {
+  var payload = {
     timestamp: new Date().toISOString(),
     namaPemesan: document.getElementById('namaPemesan').value,
     noWA: document.getElementById('noWA').value,
-    acara,
+    acara: acaraVal,
     tanggal: document.getElementById('tanggalAcara').value,
     jam: document.getElementById('jamAcara').value,
     namaPerempuan: isDouble ? document.getElementById('namaPerempuan').value : '',
     namaLaki: isDouble ? document.getElementById('namaLaki').value : '',
     tulisanNama: document.getElementById('tulisanNama').value,
-    modelId: selectedModel?.id,
-    modelNama: selectedModel?.name,
-    modelHarga: selectedModel?.price || 'Custom',
-    modelFoto: selectedModel?.img || '',
+    modelId: selectedModel ? selectedModel.id : '',
+    modelNama: selectedModel ? selectedModel.name : '',
+    modelHarga: selectedModel ? (selectedModel.price || 'Custom') : '',
+    modelFoto: selectedModel ? (selectedModel.rawFoto || '') : '',
     catatanDekorasi: document.getElementById('catatanDekorasi').value,
-    itemSewa: Object.values(selectedSewa).map(s => s.nama).join(', '),
+    itemSewa: sewaList,
     alamat: document.getElementById('alamat').value,
     atasNama: document.getElementById('atasNama').value,
-    lokasiDekor: document.querySelector('input[name="lokasiDekor"]:checked')?.value,
-    tembok: document.querySelector('input[name="tembok"]:checked')?.value,
+    lokasiDekor: (document.querySelector('input[name="lokasiDekor"]:checked') || {}).value || '',
+    tembok: (document.querySelector('input[name="tembok"]:checked') || {}).value || '',
     gmaps: document.getElementById('gmaps').value,
     status: 'Baru'
   };
 
   try {
     await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
+      method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    showSuccess();
-  } catch (err) {
+    document.getElementById('mainForm').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(e) {
     alert('Gagal mengirim. Coba lagi atau hubungi kami via WhatsApp.');
     btn.textContent = 'Kirim Booking ✓';
     btn.disabled = false;
   }
 }
 
-function showSuccess() {
-  document.getElementById('mainForm').style.display = 'none';
-  document.getElementById('successScreen').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// ============================================================
+// LIGHTBOX — Pinch Zoom + Drag
+// ============================================================
+var lbScale = 1, lbX = 0, lbY = 0;
+var lbDragging = false, lbLastX = 0, lbLastY = 0;
+var lbPinchDist = 0, lbPinchScale = 1, lbLastTap = 0;
+var lbModelId = null;
+
+function lbOpen(imgUrl, nama, harga, modelId) {
+  lbModelId = modelId || null;
+  document.getElementById('lbImg').src = imgUrl;
+  document.getElementById('lbNama').textContent = nama;
+  document.getElementById('lbHarga').textContent = harga;
+  lbResetTransform();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  lbInitGestures();
 }
+
+function lbClose() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbSelect() {
+  if (lbModelId) selectModel(lbModelId);
+  lbClose();
+}
+
+function lbResetTransform() {
+  lbScale = 1; lbX = 0; lbY = 0;
+  lbApply(true);
+}
+
+function lbApply(anim) {
+  var img = document.getElementById('lbImg');
+  if (!img) return;
+  img.style.transition = anim ? 'transform 0.25s ease' : 'none';
+  img.style.transform = 'translate(' + lbX + 'px,' + lbY + 'px) scale(' + lbScale + ')';
+}
+
+function lbInitGestures() {
+  var img = document.getElementById('lbImg');
+  var wrap = document.getElementById('lbWrap');
+
+  wrap.onclick = function(e) { if (e.target === wrap && lbScale <= 1) lbClose(); };
+
+  img.ondblclick = function(e) {
+    e.stopPropagation();
+    if (lbScale > 1) lbResetTransform(); else { lbScale = 2.5; lbApply(true); }
+  };
+
+  img.onmousedown = function(e) {
+    if (lbScale <= 1) return;
+    lbDragging = true; lbLastX = e.clientX; lbLastY = e.clientY;
+    img.classList.add('dragging'); e.preventDefault();
+  };
+  window.onmousemove = function(e) {
+    if (!lbDragging) return;
+    lbX += e.clientX - lbLastX; lbY += e.clientY - lbLastY;
+    lbLastX = e.clientX; lbLastY = e.clientY; lbApply(false);
+  };
+  window.onmouseup = function() { lbDragging = false; img.classList.remove('dragging'); };
+
+  img.ontouchstart = function(e) {
+    if (e.touches.length === 1) {
+      var now = Date.now();
+      if (now - lbLastTap < 300) { if (lbScale > 1) lbResetTransform(); else { lbScale = 2.5; lbApply(true); } lbLastTap = 0; return; }
+      lbLastTap = now; lbLastX = e.touches[0].clientX; lbLastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      lbPinchDist = lbDist(e.touches); lbPinchScale = lbScale;
+    }
+    e.preventDefault();
+  };
+  img.ontouchmove = function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && lbScale > 1) {
+      lbX += e.touches[0].clientX - lbLastX; lbY += e.touches[0].clientY - lbLastY;
+      lbLastX = e.touches[0].clientX; lbLastY = e.touches[0].clientY; lbApply(false);
+    } else if (e.touches.length === 2) {
+      var d = lbDist(e.touches);
+      lbScale = Math.min(5, Math.max(1, lbPinchScale * (d / lbPinchDist)));
+      if (lbScale <= 1) { lbX = 0; lbY = 0; } lbApply(false);
+    }
+  };
+  img.ontouchend = function() { if (lbScale < 1.05) lbResetTransform(); };
+}
+
+function lbDist(t) { var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.sqrt(dx*dx + dy*dy); }
 </script>
 </body>
 </html>
