@@ -266,6 +266,7 @@ function saveUrl() {
   closeSettings();
   showToast('✓ URL tersimpan');
   loadKatalog();
+  loadSewa();
 }
 
 function loadKatalog() {
@@ -538,15 +539,25 @@ async function saveModel() {
 
   btn.textContent = 'Menyimpan...';
   var rowIndex = document.getElementById('editRowIndex').value;
+  var action;
+  if (isSewa) {
+    action = isEditing ? 'updateSewa' : 'insertSewa';
+  } else {
+    action = isEditing ? 'updateKatalog' : 'insertKatalog';
+  }
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: isEditing ? 'updateKatalog' : 'insertKatalog', rowIndex: rowIndex ? Number(rowIndex) : null, nama: nama, harga: harga, foto: fotoUrl, keterangan: document.getElementById('inputKet').value, aktif: 'Ya' })
+      body: JSON.stringify({ action: action, rowIndex: rowIndex ? Number(rowIndex) : null, nama: nama, harga: harga, foto: fotoUrl, keterangan: document.getElementById('inputKet').value, aktif: 'Ya' })
     });
     closeModal();
-    showToast(isEditing ? '✓ Model diperbarui' : '✓ Model ditambahkan');
-    setTimeout(function() { loadKatalog(); }, 1200);
+    showToast(isEditing ? '✓ Berhasil diperbarui' : '✓ Berhasil ditambahkan');
+    if (isSewa) {
+      setTimeout(function() { loadSewa(); }, 1200);
+    } else {
+      setTimeout(function() { loadKatalog(); }, 1200);
+    }
   } catch(e) {
     showToast('✗ Gagal menyimpan', 'error');
   }
@@ -578,6 +589,15 @@ async function hapusModel(rowIndex, nama) {
     await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'deleteKatalog', rowIndex: rowIndex }) });
     showToast('🗑️ Model dihapus');
     setTimeout(function() { loadKatalog(); }, 1000);
+  } catch(e) { showToast('✗ Gagal menghapus', 'error'); }
+}
+
+async function hapusSewa(rowIndex, nama) {
+  if (!confirm('Hapus item sewa "' + nama + '"?')) return;
+  try {
+    await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'deleteSewa', rowIndex: rowIndex }) });
+    showToast('🗑️ Item sewa dihapus');
+    setTimeout(function() { loadSewa(); }, 1000);
   } catch(e) { showToast('✗ Gagal menghapus', 'error'); }
 }
 
