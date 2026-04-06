@@ -295,8 +295,17 @@
   .model-name { font-size: 12px; font-weight: 500; color: var(--charcoal); }
   .model-price { font-size: 11px; color: var(--rose); font-weight: 500; margin-top: 2px; }
 
-  /* Divider */
-  .divider {
+  /* Sewa Checklist */
+  .sewa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .sewa-item { border: 2px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: var(--warm-white); position: relative; user-select: none; }
+  .sewa-item:hover { border-color: var(--sage); }
+  .sewa-item.checked { border-color: var(--sage); background: #EFF5F0; }
+  .sewa-item.checked::after { content: '✓'; position: absolute; top: 6px; right: 8px; background: var(--sage); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .sewa-img { width: 100%; aspect-ratio: 3/2; object-fit: cover; background: linear-gradient(135deg, #d4e8d4, #f0f5f0); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .sewa-img img { width: 100%; height: 100%; object-fit: cover; }
+  .sewa-info { padding: 7px 10px; }
+  .sewa-nama { font-size: 12px; font-weight: 500; color: var(--charcoal); }
+  .sewa-harga { font-size: 11px; color: var(--sage); font-weight: 500; margin-top: 2px; }
     height: 1px;
     background: var(--border);
     margin: 24px 0;
@@ -602,6 +611,15 @@
         <textarea id="catatanDekorasi" placeholder="Warna tambahan, permintaan khusus, atau detail lain..."></textarea>
       </div>
 
+      <div class="divider"></div>
+
+      <div class="section-title" style="margin-top:0">Tambahan Sewa</div>
+      <div class="section-sub">Opsional — centang item yang ingin disewa</div>
+
+      <div id="sewaChecklist">
+        <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Memuat item sewa...</div>
+      </div>
+
       <div class="nav-buttons">
         <button class="btn btn-back" onclick="goToStep(1)">←</button>
         <button class="btn btn-next" onclick="goToStep(3)">Lanjut →</button>
@@ -701,6 +719,10 @@
             <span class="preview-key">Catatan</span>
             <span class="preview-val" id="prev-catatan">—</span>
           </div>
+          <div class="preview-row" id="prev-sewa-row" style="display:none">
+            <span class="preview-key">Item Sewa</span>
+            <span class="preview-val" id="prev-sewa">—</span>
+          </div>
           <div class="preview-row" id="prev-gmaps-row">
             <span class="preview-key">Google Maps</span>
             <span class="preview-val"><a id="prev-gmaps" href="#" target="_blank" style="color:var(--rose)">Lihat lokasi</a></span>
@@ -753,6 +775,7 @@ let currentStep = 1;
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   loadKatalog();
+  loadSewa();
 
   document.querySelectorAll('.radio-pill').forEach(pill => {
     pill.addEventListener('click', () => {
@@ -814,6 +837,62 @@ function convertDriveUrl(url) {
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
   return url;
+}
+
+// ============================================================
+// Load Sewa
+// ============================================================
+let SEWA_ITEMS = [];
+let selectedSewa = {};
+
+function loadSewa() {
+  const cb = 'swCb' + Date.now();
+  const s = document.createElement('script');
+  window[cb] = function(json) {
+    clearTimeout(timer);
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
+    SEWA_ITEMS = json.data || [];
+    renderSewaChecklist();
+  };
+  const timer = setTimeout(function() {
+    window[cb] = null;
+    if (s.parentNode) document.body.removeChild(s);
+    document.getElementById('sewaChecklist').innerHTML =
+      '<p style="font-size:12px;color:var(--muted);text-align:center">Item sewa tidak tersedia saat ini</p>';
+  }, 12000);
+  s.onerror = function() { clearTimeout(timer); window[cb] = null; };
+  s.src = APPS_SCRIPT_URL + '?action=getSewa&callback=' + cb + '&t=' + Date.now();
+  document.body.appendChild(s);
+}
+
+function renderSewaChecklist() {
+  const wrap = document.getElementById('sewaChecklist');
+  if (!SEWA_ITEMS.length) {
+    wrap.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;padding:10px 0">Tidak ada item sewa tersedia</p>';
+    return;
+  }
+  wrap.innerHTML = '<div class="sewa-grid">' + SEWA_ITEMS.map(item => {
+    const imgUrl = convertDriveUrl(item.foto);
+    const harga = item.harga ? 'Rp ' + Number(item.harga).toLocaleString('id-ID') + '/acara' : 'Harga custom';
+    return `<div class="sewa-item" id="sewa-${item.id}" onclick="toggleSewa('${item.id}','${(item.nama||'').replace(/'/g,"\\'")}','${harga}')">
+      <div class="sewa-img">${imgUrl ? `<img src="${imgUrl}" onerror="this.parentElement.innerHTML='🪑'">` : '🪑'}</div>
+      <div class="sewa-info">
+        <div class="sewa-nama">${item.nama || '—'}</div>
+        <div class="sewa-harga">${harga}</div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function toggleSewa(id, nama, harga) {
+  if (selectedSewa[id]) {
+    delete selectedSewa[id];
+    document.getElementById('sewa-' + id)?.classList.remove('checked');
+  } else {
+    selectedSewa[id] = { nama, harga };
+    document.getElementById('sewa-' + id)?.classList.add('checked');
+  }
 }
 
 function toggleNamaFields() {
@@ -1081,6 +1160,16 @@ function buildPreview() {
   document.getElementById('prev-lokasi').textContent = `${lokasiDekor} · ${tembok}`;
   document.getElementById('prev-catatan').textContent = catatan || '(tidak ada)';
 
+  // Sewa
+  const sewaKeys = Object.keys(selectedSewa);
+  if (sewaKeys.length > 0) {
+    const sewaText = sewaKeys.map(k => selectedSewa[k].nama).join(', ');
+    document.getElementById('prev-sewa').textContent = sewaText;
+    document.getElementById('prev-sewa-row').style.display = 'flex';
+  } else {
+    document.getElementById('prev-sewa-row').style.display = 'none';
+  }
+
   if (selectedModel) {
     document.getElementById('prev-model').textContent = selectedModel.name;
     document.getElementById('prev-harga').textContent = selectedModel.price
@@ -1135,6 +1224,7 @@ async function submitForm() {
     modelHarga: selectedModel?.price || 'Custom',
     modelFoto: selectedModel?.img || '',
     catatanDekorasi: document.getElementById('catatanDekorasi').value,
+    itemSewa: Object.values(selectedSewa).map(s => s.nama).join(', '),
     alamat: document.getElementById('alamat').value,
     atasNama: document.getElementById('atasNama').value,
     lokasiDekor: document.querySelector('input[name="lokasiDekor"]:checked')?.value,
