@@ -768,6 +768,16 @@ function renderCards(data) {
           <div class="card-lbl">Catatan</div>
           <div class="card-val">${d.catatanDekorasi}</div>
         </div>` : ''}
+        ${d.itemSewa ? `
+        <div class="card-row card-row-full">
+          <div class="card-lbl">Item Sewa</div>
+          <div class="card-val" style="color:var(--sage)">${d.itemSewa}</div>
+        </div>` : ''}
+        ${d.fotoReferensi ? `
+        <div class="card-row card-row-full">
+          <div class="card-lbl">Foto Referensi</div>
+          <div class="card-val"><img src="${convertDriveUrl(d.fotoReferensi)}" style="width:80px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer" onclick="window.open('${convertDriveUrl(d.fotoReferensi)}','_blank')" onerror="this.style.display='none'"></div>
+        </div>` : ''}
       </div>
       <div class="card-actions">
         ${d.gmaps ? `<a href="${d.gmaps}" target="_blank"><button class="action-btn">📍 Maps</button></a>` : ''}
