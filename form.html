@@ -121,6 +121,18 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 .lb-select-btn { padding: 10px 28px; background: var(--rose); color: white; border: none; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
 .lb-reset-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
+/* Foto Referensi Upload */
+.ref-upload-area { width: 100%; aspect-ratio: 4/3; border: 2px dashed var(--border); border-radius: 10px; overflow: hidden; background: var(--warm-white); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: border-color 0.2s; position: relative; }
+.ref-upload-area:hover { border-color: var(--rose); }
+.ref-upload-area.has-img { border-style: solid; border-color: var(--rose); }
+.ref-upload-area img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+.ref-upload-area input[type="file"] { display: none; }
+.ref-upload-icon { font-size: 28px; position: relative; z-index: 1; }
+.ref-upload-text { font-size: 12px; color: var(--muted); position: relative; z-index: 1; text-align: center; line-height: 1.5; }
+.ref-upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 2; }
+.ref-upload-area.has-img:hover .ref-upload-overlay { opacity: 1; }
+.ref-upload-overlay span { color: white; font-size: 12px; font-weight: 500; }
+
 /* Success */
 .success-screen { display: none; text-align: center; padding: 60px 20px; }
 .success-icon { width: 72px; height: 72px; background: var(--sage); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
@@ -275,6 +287,18 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
         <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Memuat item sewa...</div>
       </div>
 
+      <div class="divider"></div>
+      <div class="section-title" style="margin-top:0">Foto Referensi</div>
+      <div class="section-sub">Opsional — upload foto inspirasi dekorasi kamu</div>
+
+      <div class="ref-upload-area" id="refUploadArea" onclick="document.getElementById('refFileInput').click()">
+        <input type="file" id="refFileInput" accept="image/*" onchange="handleRefFile(event)">
+        <span class="ref-upload-icon">🖼️</span>
+        <div class="ref-upload-text">Tap untuk pilih foto referensi<br><small>JPG / PNG · Max 5MB</small></div>
+        <div class="ref-upload-overlay"><span>📷 Ganti foto</span></div>
+      </div>
+      <div id="refUploadStatus" style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center;display:none"></div>
+
       <div class="nav-buttons">
         <button class="btn btn-back" onclick="goStep(1)">←</button>
         <button class="btn btn-next" onclick="goStep(3)">Lanjut →</button>
@@ -334,6 +358,10 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
           <div class="preview-model-img" id="prev-model-img"><span>Belum dipilih</span></div>
           <div class="preview-row"><span class="preview-key">Model</span><span class="preview-val" id="prev-model">—</span></div>
           <div class="preview-row"><span class="preview-key">Harga Estimasi</span><span class="preview-val" id="prev-harga" style="color:var(--rose);font-weight:500">—</span></div>
+          <div class="preview-row" id="prev-ref-row" style="display:none">
+            <span class="preview-key">Foto Referensi</span>
+            <span class="preview-val"><img id="prev-ref-img" src="" style="width:80px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer" onclick="lbOpen(this.src,'Foto Referensi','','')"></span>
+          </div>
           <div class="preview-row" id="prev-sewa-row" style="display:none"><span class="preview-key">Item Sewa</span><span class="preview-val" id="prev-sewa" style="color:var(--sage)">—</span></div>
           <div class="preview-row"><span class="preview-key">No. WhatsApp</span><span class="preview-val" id="prev-wa">—</span></div>
           <div class="preview-row"><span class="preview-key">Tanggal & Jam</span><span class="preview-val" id="prev-tanggal">—</span></div>
@@ -384,7 +412,10 @@ let currentStep = 1;
 let MODELS = [];
 let SEWA_ITEMS = [];
 let selectedModel = null;
-let selectedSewa = {}; // { id: { nama, harga } }
+let selectedSewa = {};
+let refFileBase64 = null;
+let refFileMime = null;
+let refFileUrl = ''; // URL setelah diupload ke Drive
 
 // ============================================================
 // INIT
@@ -536,6 +567,27 @@ function toggleSewa(id, nama, harga) {
 }
 
 // ============================================================
+// FOTO REFERENSI
+// ============================================================
+function handleRefFile(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran foto maksimal 5MB'); return; }
+  refFileMime = file.type;
+  refFileUrl = '';
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    refFileBase64 = ev.target.result.split(',')[1];
+    var area = document.getElementById('refUploadArea');
+    area.classList.add('has-img');
+    area.innerHTML = '<input type="file" id="refFileInput" accept="image/*" onchange="handleRefFile(event)">' +
+      '<img src="' + ev.target.result + '" alt="referensi">' +
+      '<div class="ref-upload-overlay"><span>📷 Ganti foto</span></div>';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
 // STEP NAVIGATION
 // ============================================================
 function goStep(n) {
@@ -651,6 +703,16 @@ function buildPreview() {
     document.getElementById('prev-sewa-row').style.display = 'none';
   }
 
+  // Foto referensi preview
+  var refArea = document.getElementById('refUploadArea');
+  var refImg = refArea ? refArea.querySelector('img') : null;
+  if (refImg && refImg.src) {
+    document.getElementById('prev-ref-img').src = refImg.src;
+    document.getElementById('prev-ref-row').style.display = 'flex';
+  } else {
+    document.getElementById('prev-ref-row').style.display = 'none';
+  }
+
   if (gmaps) {
     document.getElementById('prev-gmaps-row').style.display = 'flex';
     document.getElementById('prev-gmaps-link').href = gmaps;
@@ -675,6 +737,20 @@ async function submitForm() {
   var isDouble = (acaraVal === 'Engagement' || acaraVal === 'Wedding');
   var sewaList = Object.values(selectedSewa).map(function(s) { return s.nama; }).join(', ');
 
+  // Upload foto referensi ke Drive jika ada
+  if (refFileBase64 && !refFileUrl) {
+    btn.textContent = 'Mengupload foto...';
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'uploadFoto', fileBase64: refFileBase64, mimeType: refFileMime, fileName: 'ref_' + Date.now() })
+      });
+      refFileUrl = await getUploadedUrl();
+    } catch(e) { /* lanjut tanpa URL */ }
+    btn.textContent = 'Mengirim...';
+  }
+
   var payload = {
     timestamp: new Date().toISOString(),
     namaPemesan: document.getElementById('namaPemesan').value,
@@ -691,6 +767,7 @@ async function submitForm() {
     modelFoto: selectedModel ? (selectedModel.rawFoto || '') : '',
     catatanDekorasi: document.getElementById('catatanDekorasi').value,
     itemSewa: sewaList,
+    fotoReferensi: refFileUrl || '',
     alamat: document.getElementById('alamat').value,
     atasNama: document.getElementById('atasNama').value,
     lokasiDekor: (document.querySelector('input[name="lokasiDekor"]:checked') || {}).value || '',
@@ -804,6 +881,17 @@ function lbInitGestures() {
 }
 
 function lbDist(t) { var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.sqrt(dx*dx + dy*dy); }
+
+function getUploadedUrl() {
+  return new Promise(function(resolve) {
+    var cb = 'rCb' + Date.now();
+    var s = document.createElement('script');
+    var t = setTimeout(function() { resolve(''); window[cb] = null; if(s.parentNode) document.body.removeChild(s); }, 8000);
+    window[cb] = function(json) { clearTimeout(t); window[cb] = null; if(s.parentNode) document.body.removeChild(s); resolve(json.url || ''); };
+    s.src = APPS_SCRIPT_URL + '?action=getLastUpload&callback=' + cb + '&t=' + Date.now();
+    document.body.appendChild(s);
+  });
+}
 </script>
 </body>
 </html>
